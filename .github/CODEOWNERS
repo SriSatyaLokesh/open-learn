@@ -1,0 +1,31 @@
+# CODEOWNERS
+#
+# Requests review from the listed owner(s) whenever a PR touches a matching
+# path. Last pattern to match a given file wins, so more specific rules go
+# below more general ones. See:
+# https://docs.github.com/articles/about-codeowners
+#
+# OpenLearn has one maintainer today. Every path below routes to
+# @SriSatyaLokesh until a second maintainer earns ownership of a specific
+# area — at that point, split the relevant line rather than restructuring
+# this file.
+
+# Default owner for anything not matched more specifically below.
+*                       @SriSatyaLokesh
+
+# Product direction and architecture: changes here set precedent for the
+# whole project (see docs/ARCHITECTURE_REVIEW.md for why) and should not
+# land without the maintainer's review.
+/docs/                  @SriSatyaLokesh
+/docs/ADR/              @SriSatyaLokesh
+
+# Database schema, RLS policies and migrations are the security boundary
+# (docs/ADR/0002-data-access-and-rls.md) — reviewed without exception.
+/supabase/               @SriSatyaLokesh
+
+# CI, issue/PR templates, labels, and this file.
+/.github/                @SriSatyaLokesh
+
+# Release-critical files.
+/LICENSE                 @SriSatyaLokesh
+/CODE_OF_CONDUCT.md      @SriSatyaLokesh
