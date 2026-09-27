@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Community Discussions
+    url: https://github.com/SriSatyaLokesh/open-learn/discussions
+    about: Ask questions, share ideas, and connect with other learners and contributors.
+  - name: 📐 OpenLearn Product PRD
+    url: https://github.com/SriSatyaLokesh/open-learn/blob/main/docs/OPENLEARN_PRD.md
+    about: Explore the complete product vision, architecture specifications, and requirements.
