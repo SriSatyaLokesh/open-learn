@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "OpenLearn Architecture",
+    "output": "architecture-diagram.html",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "public-pages", "label": "Public pages", "focus": ["learner", "worker", "r2"], "note": "Prerendered on publish; served as static files at zero Worker CPU." },
+      { "id": "authenticated-app", "label": "Authenticated app", "focus": ["learner", "auth", "db"], "note": "supabase-js carries the user JWT; RLS in Postgres is the security boundary." },
+      { "id": "ingestion", "label": "Ingestion", "focus": ["learner", "edge", "ytapi", "db"], "note": "All server compute and YouTube calls run in Edge Functions, quota-budgeted." },
+      { "id": "scheduling", "label": "Scheduled sweeps", "focus": ["db", "edge", "r2"], "note": "pg_cron drives the retention refresh and re-prerendering via pg_net." }
+    ]
+  },
+  "components": [
+    { "id": "learner", "type": "external", "label": "Learner", "sublabel": "PWA / Focus Room", "pos": [40, 250], "size": [140, 60] },
+    { "id": "ytplayer", "type": "external", "label": "YouTube Player", "sublabel": "IFrame API", "pos": [40, 450], "size": [150, 60] },
+
+    { "id": "assets", "type": "cloud", "label": "Static Assets", "sublabel": "app shell", "pos": [300, 40], "size": [150, 60], "tag": "free, unlimited" },
+    { "id": "worker", "type": "backend", "label": "Worker", "sublabel": "routing / sitemap / R2 fallback", "pos": [300, 250], "size": [150, 60] },
+    { "id": "r2", "type": "database", "label": "R2", "sublabel": "prerendered HTML, certs, backups", "pos": [300, 450], "size": [150, 60] },
+
+    { "id": "auth", "type": "security", "label": "Supabase Auth", "sublabel": "incl. anonymous sign-in", "pos": [600, 40], "size": [160, 60] },
+    { "id": "db", "type": "database", "label": "PostgreSQL", "sublabel": "RLS / pg_cron / pgmq / FTS", "pos": [600, 250], "size": [160, 60] },
+    { "id": "edge", "type": "backend", "label": "Edge Functions", "sublabel": "ingest, prerender, certs, push", "pos": [600, 450], "size": [160, 60] },
+
+    { "id": "posthog", "type": "external", "label": "PostHog", "sublabel": "analytics + errors", "pos": [900, 40], "size": [170, 60] },
+    { "id": "ytapi", "type": "external", "label": "YouTube Data API", "sublabel": "10,000 units/day, shared", "pos": [900, 450], "size": [170, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Cloudflare (free)", "wraps": ["assets", "worker", "r2"] },
+    { "kind": "region", "label": "Supabase (free)", "wraps": ["auth", "db", "edge"] }
+  ],
+  "connections": [
+    { "id": "learner-assets", "from": "learner", "to": "assets", "label": "app shell", "labelAt": [240, 100] },
+    { "id": "learner-worker", "from": "learner", "to": "worker", "label": "public pages, sitemap", "labelAt": [300, 324] },
+    { "id": "worker-r2", "from": "worker", "to": "r2", "label": "serve prerendered", "variant": "emphasis", "labelAt": [375, 324] },
+    { "id": "learner-auth", "from": "learner", "to": "auth", "label": "sign in", "fromSide": "top", "toSide": "bottom" },
+    { "id": "learner-db", "from": "learner", "to": "db", "label": "supabase-js + JWT, RLS enforced", "variant": "emphasis", "fromSide": "top", "toSide": "top" },
+    { "id": "learner-edge", "from": "learner", "to": "edge", "label": "import, publish", "fromSide": "right", "toSide": "right", "via": [[260, 280], [260, 130], [780, 130], [780, 480]], "labelSegment": 2 },
+    { "id": "learner-ytplayer", "from": "learner", "to": "ytplayer", "label": "playback, no quota", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "learner-posthog", "from": "learner", "to": "posthog", "label": "events", "variant": "dashed", "fromSide": "top", "toSide": "bottom" },
+    { "id": "edge-db", "from": "edge", "to": "db", "label": "service role", "labelAt": [723, 246] },
+    { "id": "edge-ytapi", "from": "edge", "to": "ytapi", "label": "batched, budgeted" },
+    { "id": "edge-r2", "from": "edge", "to": "r2", "label": "write prerendered HTML" },
+    { "id": "db-edge-cron", "from": "db", "to": "edge", "label": "pg_cron + pg_net", "variant": "dashed", "labelAt": [560, 395] }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Zero-cost by construction", "items": ["Public pages prerendered to R2 on publish, served as static assets", "A viral page consumes no metered resource: no Worker CPU, no egress charge", "10 ms host CPU ceiling never applies to public traffic"] },
+    { "dot": "emerald", "title": "Authorization", "items": ["Row Level Security in Postgres is the boundary, not application code", "Service role bypasses RLS only in Edge Functions, never from the browser"] },
+    { "dot": "rose", "title": "YouTube contract", "items": ["Quota is global per project, shared across every user", "30-day metadata retention sweep doubles as the video health check"] }
+  ]
+}
