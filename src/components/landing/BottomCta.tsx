@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/BottomCta.tsx
+ * @file src/components/landing/BottomCta.tsx
  * @description Bottom conversion call-to-action banner for OpenLearn.
  * Encapsulated dark charcoal card featuring high-contrast typography, electric orange accent glow,
  * dual conversion buttons (primary start learning jump & curriculum exploration), and trust metadata.

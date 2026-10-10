@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/HeroSection.tsx
+ * @file src/components/landing/HeroSection.tsx
  * @description Hero section with primary value proposition and live workstation mockup.
  * Displays the core headline, dual CTAs, trust badges, and an interactive product preview
  * that allows visitors to switch between concept nodes in a simulated curriculum queue.

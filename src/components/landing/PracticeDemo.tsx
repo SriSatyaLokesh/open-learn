@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/PracticeDemo.tsx
+ * @file src/components/landing/PracticeDemo.tsx
  * @description Interactive "Learn by Doing" checkpoint sandbox.
  * Simulates active recall practice drills with instant feedback to prove
  * OpenLearn reinforces retention instead of passive video consumption.

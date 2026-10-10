@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/ProblemAudit.tsx
+ * @file src/components/landing/ProblemAudit.tsx
  * @description Comparative audit cards contrasting the YouTube attention trap with OpenLearn.
  * Visualizes the 97% abandon rate of unstructured YouTube playlists vs. the structured
  * concept progression and active retention of OpenLearn.

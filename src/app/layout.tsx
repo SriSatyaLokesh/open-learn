@@ -9,8 +9,7 @@
 import type { Metadata } from 'next';
 import { Outfit, Newsreader, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import { HeaderNav } from '@/components/layout/HeaderNav';
-import { EditorialFooter } from '@/components/layout/EditorialFooter';
+import { HeaderNav, EditorialFooter } from '@/components/layout';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -35,6 +34,30 @@ export const metadata: Metadata = {
   title: 'OpenLearn — Turn Online Content Into Learning You Can Finish',
   description:
     'OpenLearn turns scattered videos from YouTube and the open web into structured learning paths with practice, progress tracking, and verified completion.',
+  keywords: [
+    'OpenLearn',
+    'Open Curriculum',
+    'YouTube Learning',
+    'Self-Taught Developers',
+    'Structured Learning',
+    'Active Recall',
+    'Distraction-Free Learning',
+  ],
+  authors: [{ name: 'OpenLearn Community' }],
+  openGraph: {
+    title: 'OpenLearn — Turn Online Content Into Learning You Can Finish',
+    description:
+      'OpenLearn turns scattered videos from YouTube and the open web into structured learning paths with practice, progress tracking, and verified completion.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'OpenLearn',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'OpenLearn — Turn Online Content Into Learning You Can Finish',
+    description:
+      'OpenLearn turns scattered videos from YouTube and the open web into structured learning paths with practice, progress tracking, and verified completion.',
+  },
 };
 
 export default function RootLayout({

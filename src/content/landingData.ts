@@ -5,49 +5,27 @@
  * decoupled from presentation components, enabling easy updates and future MDX migrations.
  */
 
-export interface NavLink {
-  label: string;
-  href: string;
-}
+import type {
+  NavLink,
+  ProblemComparisonItem,
+  StepItem,
+  PathNode,
+  FaqItem,
+  PersonaItem,
+  LandingDataContract,
+} from '@/types';
 
-export interface ProblemComparisonItem {
-  title: string;
-  description: string;
-}
+export type {
+  NavLink,
+  ProblemComparisonItem,
+  StepItem,
+  PathNode,
+  FaqItem,
+  PersonaItem,
+  LandingDataContract,
+};
 
-export interface StepItem {
-  number: string;
-  title: string;
-  description: string;
-  tag: string;
-}
-
-export interface PathNode {
-  id: string;
-  stepNumber: string;
-  title: string;
-  creator: string;
-  duration: string;
-  status: 'completed' | 'active' | 'queued';
-  hasPractice: boolean;
-  conceptSummary: string;
-}
-
-export interface FaqItem {
-  id: string;
-  question: string;
-  directAnswer: string;
-  detailedAnswer: string;
-}
-
-export interface PersonaItem {
-  role: string;
-  problem: string;
-  outcome: string;
-  badge: string;
-}
-
-export const LANDING_DATA = {
+export const LANDING_DATA: LandingDataContract = {
   nav: {
     brandName: 'OpenLearn',
     brandTag: 'v1.0 // OPEN CURRICULUM',

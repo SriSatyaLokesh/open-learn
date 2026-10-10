@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/SolutionPipeline.tsx
+ * @file src/components/landing/SolutionPipeline.tsx
  * @description Linear transformation diagram showing the 5-stage paradigm shift:
  * Scattered Content -> Structured Concepts -> Active Practice -> Tracked Progress -> Verified Completion.
  */

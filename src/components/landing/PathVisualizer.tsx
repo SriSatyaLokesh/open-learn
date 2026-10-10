@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/PathVisualizer.tsx
+ * @file src/components/landing/PathVisualizer.tsx
  * @description Interactive concept hierarchy curriculum viewer.
  * Demonstrates the Foundations of RAG path with prerequisite nodes, durations,
  * active concept highlights, and an expandable concept inspector drawer.

@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/HowItWorks.tsx
+ * @file src/components/landing/HowItWorks.tsx
  * @description 5-step numbered cards explaining the OpenLearn workflow:
  * STEP 01 Choose -> STEP 02 Follow -> STEP 03 Practice -> STEP 04 Track -> STEP 05 Finish.
  */

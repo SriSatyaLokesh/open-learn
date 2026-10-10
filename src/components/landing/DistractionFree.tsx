@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/DistractionFree.tsx
+ * @file src/components/landing/DistractionFree.tsx
  * @description Bento grid feature architecture showcasing the Focus Room:
  * Ad-free theater canvas, synchronized Pomodoro timer, smart URL/playlist importer,
  * and timestamped study notes.

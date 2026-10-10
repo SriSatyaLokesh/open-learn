@@ -17,18 +17,20 @@
  */
 
 import React from 'react';
-import { HeroSection } from '@/components/sections/HeroSection';
-import { ProblemAudit } from '@/components/sections/ProblemAudit';
-import { SolutionPipeline } from '@/components/sections/SolutionPipeline';
-import { HowItWorks } from '@/components/sections/HowItWorks';
-import { DistractionFree } from '@/components/sections/DistractionFree';
-import { PathVisualizer } from '@/components/sections/PathVisualizer';
-import { PracticeDemo } from '@/components/sections/PracticeDemo';
-import { ProgressHud } from '@/components/sections/ProgressHud';
-import { OpenCurriculum } from '@/components/sections/OpenCurriculum';
-import { AudienceSection } from '@/components/sections/AudienceSection';
-import { FaqSection } from '@/components/sections/FaqSection';
-import { BottomCta } from '@/components/sections/BottomCta';
+import {
+  HeroSection,
+  ProblemAudit,
+  SolutionPipeline,
+  HowItWorks,
+  DistractionFree,
+  PathVisualizer,
+  PracticeDemo,
+  ProgressHud,
+  OpenCurriculum,
+  AudienceSection,
+  FaqSection,
+  BottomCta,
+} from '@/components/landing';
 
 export default function HomePage() {
   return (

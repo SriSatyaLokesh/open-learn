@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/ProgressHud.tsx
+ * @file src/components/landing/ProgressHud.tsx
  * @description Course continuity, daily streaks, and scholar trophy cabinet.
  * Shows the persistent resume frontier, 7-day focus streak counter with amber glow,
  * and tangible achievement milestone badges.

@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/AudienceSection.tsx
+ * @file src/components/landing/AudienceSection.tsx
  * @description Learner persona matrix.
  * Articulates specific friction points and tailored outcomes for:
  * 1. Self-Taught Developers, 2. STEM Students, 3. Career Switchers, 4. Lifelong Polymaths.

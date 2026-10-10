@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/OpenCurriculum.tsx
+ * @file src/components/landing/OpenCurriculum.tsx
  * @description Open curriculum model and Git-style forking flow.
  * Visualizes the 4-phase loop: Create -> Learn -> Fork -> Share, highlighting
  * OpenLearn as the collaborative open-source curriculum layer for the internet.

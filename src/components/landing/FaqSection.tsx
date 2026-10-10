@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * @file src/components/sections/FaqSection.tsx
+ * @file src/components/landing/FaqSection.tsx
  * @description Frequently asked questions using semantic details/summary accordions.
  * Provides clear, direct 1-2 sentence answers followed by detailed technical context
  * covering OpenLearn, YouTube API compliance, costs, and curriculum creation.
