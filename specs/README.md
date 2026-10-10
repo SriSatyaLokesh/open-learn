@@ -32,8 +32,9 @@ Every specification in this directory follows a standard structure:
 
 | Specification | ID | Scope | Target Route | Status |
 |---|---|---|---|---|
-| [`landing-page.spec.md`](./landing-page.spec.md) | `SPEC-0001` | Public landing page, narrative flow, interactive preview sandboxes, and SEO/AEO metadata | `/` | `Implemented` |
-| [`focus-room-phase1.spec.md`](./focus-room-phase1.spec.md) | `SPEC-0002` | Phase 1 Foundation: Distraction-Free Focus Room, YouTube IFrame engine, URL/playlist parser, timestamped notes & guest persistence | `/room` | `Ready for Implementation` |
-| [`multi-agent-orchestrator.spec.md`](./multi-agent-orchestrator.spec.md) | `SYS-0001` | Autonomous GitHub delivery and verification engine (MACO) | CI/CD & GitHub Actions | `Architecture Record` |
-| [`landing-page-plan.md`](./landing-page-plan.md) | `PLAN-0001` | Original 12-section product positioning, messaging audit, and UX strategy | `/` | `Archived Reference` |
+| [`landing-page/spec.md`](./landing-page/spec.md) | `SPEC-0001` | Public landing page, narrative flow, interactive preview sandboxes, and SEO/AEO metadata | `/` | `Implemented` |
+| [`focus-room-phase1/spec.md`](./focus-room-phase1/spec.md) | `SPEC-0002` | Phase 1 Foundation: Distraction-Free Focus Room, YouTube IFrame engine, URL/playlist parser, timestamped notes & guest persistence | `/room` | `Ready for Implementation` |
+| [`multi-agent-orchestrator/spec.md`](./multi-agent-orchestrator/spec.md) | `SYS-0001` | Autonomous GitHub delivery and verification engine (MACO) | CI/CD & GitHub Actions | `Architecture Record` |
+| [`landing-page/plan.md`](./landing-page/plan.md) | `PLAN-0001` | Original 12-section product positioning, messaging audit, and UX strategy | `/` | `Archived Reference` |
+
 

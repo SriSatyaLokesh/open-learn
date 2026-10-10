@@ -5,8 +5,8 @@
 **Status:** Implemented  
 **Target Route:** `/`  
 **Primary Owner:** Frontend Engineering (`@SriSatyaLokesh`, `@scc4287`)  
-**Parent Document:** [`docs/OPENLEARN_PRD.md`](../docs/OPENLEARN_PRD.md)  
-**Related ADRs:** [`docs/ADR/0001-hosting-and-rendering.md`](../docs/ADR/0001-hosting-and-rendering.md), [`docs/ADR/0005-repo-structure.md`](../docs/ADR/0005-repo-structure.md)  
+**Parent Document:** [`docs/OPENLEARN_PRD.md`](../../docs/OPENLEARN_PRD.md)  
+**Related ADRs:** [`docs/ADR/0001-hosting-and-rendering.md`](../../docs/ADR/0001-hosting-and-rendering.md), [`docs/ADR/0005-repo-structure.md`](../../docs/ADR/0005-repo-structure.md)  
 
 ---
 

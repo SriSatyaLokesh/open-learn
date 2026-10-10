@@ -5,12 +5,12 @@
 **Status:** Draft / Ready for Implementation  
 **Target Route:** `/room`  
 **Primary Owner:** Core Engineering (`@SriSatyaLokesh`, `@scc4287`)  
-**Parent Document:** [`docs/OPENLEARN_PRD.md`](../docs/OPENLEARN_PRD.md) (Section 15: Focus Room, Section 14: Content Adaptation)  
+**Parent Document:** [`docs/OPENLEARN_PRD.md`](../../docs/OPENLEARN_PRD.md) (Section 15: Focus Room, Section 14: Content Adaptation)  
 **Related ADRs:**  
-- [`docs/ADR/0006-youtube-provider-contract.md`](../docs/ADR/0006-youtube-provider-contract.md) *(YouTube IFrame Provider Contract & Compliance)*  
-- [`docs/ADR/0007-guest-mode.md`](../docs/ADR/0007-guest-mode.md) *(Guest-First Continuity & Anonymous Auth Seam)*  
-- [`docs/ADR/0001-hosting-and-rendering.md`](../docs/ADR/0001-hosting-and-rendering.md) *(SSR vs. Client Boundaries)*  
-- [`docs/ADR/0005-repo-structure.md`](../docs/ADR/0005-repo-structure.md) *(Domain Boundary Isolation)*  
+- [`docs/ADR/0006-youtube-provider-contract.md`](../../docs/ADR/0006-youtube-provider-contract.md) *(YouTube IFrame Provider Contract & Compliance)*  
+- [`docs/ADR/0007-guest-mode.md`](../../docs/ADR/0007-guest-mode.md) *(Guest-First Continuity & Anonymous Auth Seam)*  
+- [`docs/ADR/0001-hosting-and-rendering.md`](../../docs/ADR/0001-hosting-and-rendering.md) *(SSR vs. Client Boundaries)*  
+- [`docs/ADR/0005-repo-structure.md`](../../docs/ADR/0005-repo-structure.md) *(Domain Boundary Isolation)*  
 
 ---
 
@@ -23,7 +23,7 @@ Online learners encounter overwhelming cognitive friction on standard video plat
 3. **Zero Completion Structure:** Multi-part video courses lack prerequisite tracking, checkmarks, or clear resume points, resulting in a 97% abandon rate.
 
 ### 1.2 The Solution
-Deliver **Phase 1: Foundation (Core Focus Engine)** as defined in [`README.md`](../README.md):
+Deliver **Phase 1: Foundation (Core Focus Engine)** as defined in [`README.md`](../../README.md):
 - A distraction-free study environment at `/room` connected directly to the landing page.
 - An official YouTube IFrame player engine operating under strict compliance with YouTube Terms of Service.
 - A smart URL and playlist ingestion parser for instant course setup.
