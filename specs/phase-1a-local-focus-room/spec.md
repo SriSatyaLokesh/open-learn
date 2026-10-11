@@ -2,7 +2,7 @@
 
 **Specification ID:** SPEC-0002
 **Feature:** URL import, Focus Room, timestamped notes, progress, local export — no backend
-**Status:** Draft
+**Status:** Draft (blocked on acceptance of ADR 0011 and 0012)
 **Target Routes:** `/import`, `/library`, `/focus`
 **Primary Owner:** Frontend Engineering (`@SriSatyaLokesh`, `@scc4287`)
 **Parent Documents:** [`docs/OPENLEARN_PRD.md`](../../docs/OPENLEARN_PRD.md) §11, §15, §16, §18, §19 · [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) §6, §8, §9, §11, §17
@@ -248,7 +248,7 @@ Each AC names its verifying layer: **U** = Vitest unit · **D** = Vitest + `fake
 
 ### Tooling and structure
 - [ ] **AC-1 (U/lint)** ESLint flat config fails on a deep import across `modules/*` and on any `react`/`next` import inside `modules/`.
-- [ ] **AC-2** `next build` with `output: 'export'`, `tsc --noEmit`, and lint pass with zero errors in CI on every PR.
+- [ ] **AC-2** The OpenNext/Worker pipeline from `main` is replaced by an assets-only deploy (ADR 0011); `next build` with `output: 'export'`, `tsc --noEmit`, and lint pass with zero errors in CI on every PR.
 - [ ] **AC-3** `src/app/*` routes build as static files; no route handlers or server actions exist.
 - [ ] **AC-4** A GitHub Actions workflow runs lint, typecheck, Vitest, build and Playwright, and is required for merge.
 

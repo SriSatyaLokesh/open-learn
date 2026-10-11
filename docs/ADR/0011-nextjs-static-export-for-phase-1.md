@@ -1,6 +1,6 @@
 # ADR 0011 — Next.js static export for Phase 1
 
-**Status:** Accepted · **Date:** 2026-10-11
+**Status:** Proposed (pending maintainer review) · **Date:** 2026-10-11
 **Supersedes (for Phase 1 only):** [ADR 0001b](./0001b-framework.md)
 
 ## Context
@@ -8,6 +8,8 @@
 [ADR 0001b](./0001b-framework.md) chose SvelteKit over Next.js and recorded the reason: Cloudflare Workers Free kills any invocation over **10 ms of CPU** (Error 1102), and Next.js on Workers via `@opennextjs/cloudflare` has the most documented 1102 failures.
 
 Since then the repository was initialised with **Next.js 15 (App Router)** and a complete landing page ([SPEC-0001](../../specs/landing-page/spec.md), ~2,000 lines). No ADR recorded that departure, which left an Accepted ADR and the codebase in direct contradiction.
+
+**Also on `main` (commits `cc9bf15`, `396b9df`, 2026-10-11):** a deployment pipeline that runs Next.js as **SSR on Cloudflare Workers via `@opennextjs/cloudflare`** (`wrangler.json`, `open-next.config.ts`, `.github/workflows/deploy-cloudflare.yml`, `docs/CLOUDFLARE_SSR_DEPLOYMENT.md`). That is the exact configuration ADR 0001b rejected, and it was merged without an ADR. This ADR therefore has to decide between that pipeline and a static export, not only between Next.js and SvelteKit.
 
 Re-examining the premise for **Phase 1** specifically:
 
@@ -20,6 +22,10 @@ So the objection to Next.js was an objection to **Next.js running on Workers**. 
 ## Decision
 
 **Phase 1 ships as a Next.js 15 static export** (`output: 'export'`), served as static assets on Cloudflare.
+
+### Deployment change required
+
+The OpenNext pipeline on `main` must be replaced as part of Phase 1 tooling (SPEC-0002 AC-2–4): `opennextjs-cloudflare build` and the Worker entry (`main: .open-next/worker.js`) are removed; `wrangler.json` becomes **assets-only** pointing at `out/`, so no Worker script runs. `@opennextjs/cloudflare` is dropped from dependencies and `docs/CLOUDFLARE_SSR_DEPLOYMENT.md` is rewritten. Until that lands, the SSR pipeline remains deployed and this ADR is not in force.
 
 ### Configuration consequences
 
@@ -82,7 +88,8 @@ ESLint flat config enforces (a) no deep imports across `modules/*` and (b) no `r
 
 **Accepted:**
 
-- **This overrides the project owner's recorded priority** ("headroom over familiarity") on a narrower basis than 0001b considered: it removes the CPU risk rather than trading against it. The owner confirmed the direction on 2026-10-11 and is the gate for reopening it.
+- **This overrides the project owner's recorded priority** ("headroom over familiarity") on a narrower basis than 0001b considered: it removes the CPU risk rather than trading against it. The maintainer (`@SriSatyaLokesh`, per CODEOWNERS) has not yet reviewed it; this ADR is **Proposed** until they accept it, and the SSR pipeline merged on 2026-10-11 suggests they may prefer SSR on Workers. That is the central question for the review.
+- **A merged deployment pipeline is discarded.** Small in lines, but it is the maintainer's most recent work.
 - **Query-parameter URLs are less pretty** than path routes.
 - **The `svelte-dnd-action` argument from 0001b is not resolved, only deferred.** The Phase 2 Path Builder needs a keyboard-accessible drag-and-drop library for React (e.g. `dnd-kit`), which must be screen-reader tested exactly as ADR 0001b required of its Svelte equivalent.
 - **React's larger client bundle** weighs on the Focus Room. Phase 1 must record a bundle-size and Lighthouse baseline so the Phase 2 decision uses measurements.

@@ -1,6 +1,6 @@
 # ADR 0012 — Local-first data layer: IndexedDB is the source of truth
 
-**Status:** Accepted · **Date:** 2026-10-11
+**Status:** Proposed (pending maintainer review) · **Date:** 2026-10-11
 **Builds on:** [ADR 0009](./0009-pwa-and-offline.md) · **Amends:** [ADR 0007](./0007-guest-mode.md)
 
 ## Context
