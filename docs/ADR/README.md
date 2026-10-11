@@ -7,15 +7,17 @@ An ADR is not permanent. If you think one is wrong, open an issue citing its num
 | # | Decision | Status |
 |---|---|---|
 | [0001](./0001-hosting-and-rendering.md) | Cloudflare hosting; public pages prerendered into R2 | Accepted |
-| [0001b](./0001b-framework.md) | SvelteKit, not Next.js/React | Accepted |
+| [0001b](./0001b-framework.md) | SvelteKit, not Next.js/React | Accepted (proposed: superseded for Phase 1 by 0011) |
 | [0002](./0002-data-access-and-rls.md) | RLS is the authorization boundary; Drizzle for types and service-role work | Accepted |
 | [0003](./0003-background-jobs.md) | `pg_cron` + `pgmq` + Edge Functions, no job vendor | Accepted |
 | [0004](./0004-feed-strategy.md) | Single `ACTIVITY` table, not fan-out-on-write | Accepted |
 | [0005](./0005-repo-structure.md) | Module folders with lint boundaries, not seven packages | Accepted |
 | [0006](./0006-youtube-provider-contract.md) | Quota budget, 30-day retention sweep, player constraints | Accepted |
-| [0007](./0007-guest-mode.md) | Supabase anonymous sign-in for Guest Mode | Accepted |
+| [0007](./0007-guest-mode.md) | Supabase anonymous sign-in for Guest Mode | Accepted (proposed: amended for Phase 1 by 0012) |
 | [0008](./0008-ingestion-execution-model.md) | Ingestion in an Edge Function; direct-invoke, `pgmq` for outliers | Accepted |
 | [0009](./0009-pwa-and-offline.md) | IndexedDB outbox, no sync engine; per-field merge rules | Accepted |
 | [0010](./0010-r2-access-control.md) | R2 has no RLS; private objects via Edge-Function-signed URLs | Accepted |
+| [0011](./0011-nextjs-static-export-for-phase-1.md) | Next.js static export for Phase 1; query-param routes; revisit gate before Phase 2 | Proposed |
+| [0012](./0012-local-first-data-layer.md) | IndexedDB is the source of truth (Dexie); client UUIDv7 ids; guests local-only until sign-up | Proposed |
 
 Background for all of these: [`../ARCHITECTURE_REVIEW.md`](../ARCHITECTURE_REVIEW.md).

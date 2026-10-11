@@ -1,6 +1,7 @@
 # ADR 0007 — Supabase anonymous sign-in for Guest Mode
 
 **Status:** Accepted · **Date:** 2026-09-27
+**Proposed: amended for Phase 1 by [ADR 0012](./0012-local-first-data-layer.md)** (2026-10-11): in Phase 1 guests are **local-only** (IndexedDB) and **no anonymous Supabase session is created**. Sync starts at sign-up ("Save your learning journey"), with client-generated UUIDv7 ids so uploaded rows keep their ids. The lazy-creation, capability-gating and MAU reasoning below still applies if anonymous sync is reintroduced later.
 
 ## Context
 
