@@ -71,3 +71,5 @@ Desktop.ini
 .parcel-cache/
 .eslintcache
 .stylelintcache
+*.tsbuildinfo
+
