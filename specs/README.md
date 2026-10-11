@@ -33,6 +33,8 @@ Every specification in this directory follows a standard structure:
 | Specification | ID | Scope | Target Route | Status |
 |---|---|---|---|---|
 | [`landing-page/spec.md`](./landing-page/spec.md) | `SPEC-0001` | Public landing page, narrative flow, interactive preview sandboxes, and SEO/AEO metadata | `/` | `Implemented` |
+| [`phase-1a-local-focus-room/spec.md`](./phase-1a-local-focus-room/spec.md) | `SPEC-0002` | Phase 1A: local-only URL import, Focus Room, timestamped notes, progress, export | `/import`, `/library`, `/focus` | `Draft` |
+| [`phase-1b-accounts-sync/spec.md`](./phase-1b-accounts-sync/spec.md) | `SPEC-0003` | Phase 1B: Supabase auth, RLS schema, outbox sync, playlist import | Supabase + sync layer | `Outline` |
 | [`multi-agent-orchestrator/spec.md`](./multi-agent-orchestrator/spec.md) | `SYS-0001` | Autonomous GitHub delivery and verification engine (MACO) | CI/CD & GitHub Actions | `Architecture Record` |
 | [`landing-page/plan.md`](./landing-page/plan.md) | `PLAN-0001` | Original 12-section product positioning, messaging audit, and UX strategy | `/` | `Archived Reference` |
 

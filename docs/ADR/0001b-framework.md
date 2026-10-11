@@ -1,6 +1,7 @@
 # ADR 0001b — SvelteKit, not Next.js/React
 
 **Status:** Accepted · **Date:** 2026-09-27
+**Superseded for Phase 1 by [ADR 0011](./0011-nextjs-static-export-for-phase-1.md)** (2026-10-11). Phase 1 ships as a Next.js static export. This ADR remains the reference for the Phase 2 re-decision gate.
 
 ## Context
 
