@@ -38,7 +38,7 @@ flowchart LR
 
 | File | Purpose |
 |---|---|
-| [`wrangler.jsonc`](../wrangler.jsonc) | Defines Worker name, entry point (`.open-next/worker.js`), `nodejs_compat` flag, and assets binding (`.open-next/assets`). |
+| [`wrangler.json`](../wrangler.json) | Defines Worker name, entry point (`.open-next/worker.js`), `nodejs_compat` flag, and assets binding (`.open-next/assets`). |
 | [`open-next.config.ts`](../open-next.config.ts) | OpenNext adapter configuration for Cloudflare overrides (R2 cache, edge bindings). |
 | [`next.config.ts`](../next.config.ts) | Next.js configuration for transpilation and remote image patterns. |
 | [`.github/workflows/deploy-cloudflare.yml`](../.github/workflows/deploy-cloudflare.yml) | Automated CI/CD pipeline for verification and Cloudflare deployment. |
