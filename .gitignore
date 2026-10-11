@@ -12,6 +12,8 @@ dist/
 build/
 out/
 .next/
+.open-next/
+.wrangler/
 .turbo/
 coverage/
 
