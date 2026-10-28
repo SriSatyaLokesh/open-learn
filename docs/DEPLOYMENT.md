@@ -50,8 +50,8 @@ Set both as GitHub repository secrets:
 
 | Job | Runs on | Steps |
 |---|---|---|
-| `verify` | Pull request, push, manual dispatch | `pnpm install --frozen-lockfile` → `lint` → `check` → `build` → install Chromium → `test:e2e`. Uploads `playwright-report` on failure. |
-| `deploy` | Push to `main`, manual dispatch | Deploys when both secrets exist; otherwise logs a warning and skips. |
+| `verify` | Pull requests to `main`, pushes to `main`, manual dispatch | `pnpm install --frozen-lockfile` → `lint` → `check` → `build` → install Chromium → `test:e2e`. Uploads `playwright-report` on failure. |
+| `deploy` | Push to `main`, manual dispatch | Deploys when `CLOUDFLARE_API_TOKEN` is set (`CLOUDFLARE_ACCOUNT_ID` is also needed for the deploy to succeed); otherwise logs a warning and skips. |
 
 ---
 

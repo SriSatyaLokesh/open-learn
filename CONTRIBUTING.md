@@ -64,7 +64,7 @@ Before starting work on large technical features, please open an issue or check 
 
 ## Local Development
 
-Requires Node.js 22.17 or newer and Corepack (ships with Node).
+Requires Node.js 22.17 or newer and Corepack (ships with Node ≤ 24; on Node 25+ install it with `npm i -g corepack`).
 
 ```bash
 corepack enable

@@ -184,7 +184,7 @@ Whether you write code, design interfaces, or curate world-class playlists, **th
 
 ## Development Setup
 
-Requires Node.js 22.17 or newer (CI uses Node 24) and Corepack, which ships with Node. No accounts or API keys are needed locally.
+Requires Node.js 22.17 or newer (CI uses Node 24) and Corepack, which ships with Node ≤ 24 (on Node 25+ install it with `npm i -g corepack`). No accounts or API keys are needed locally.
 
 ```bash
 corepack enable
