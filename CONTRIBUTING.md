@@ -16,6 +16,7 @@ Whether you are writing code, curating high-quality learning paths, designing di
   - [2. Code & Architecture](#2-code--architecture)
   - [3. UI/UX Design & Accessibility](#3-uiux-design--accessibility)
   - [4. Documentation & Translations](#4-documentation--translations)
+- [Local Development](#local-development)
 - [Reporting Bugs & Suggesting Features](#reporting-bugs--suggesting-features)
 - [Git Workflow & Conventions](#git-workflow--conventions)
   - [Branch Naming](#branch-naming)
@@ -58,6 +59,20 @@ Before starting work on large technical features, please open an issue or check 
 - Expanding guides, API contracts, and Architectural Decision Records (ADRs).
 - Writing tutorials on creating and forking learning paths.
 - Localizing the platform for non-English learners.
+
+---
+
+## Local Development
+
+Requires Node.js 22.17 or newer and Corepack (ships with Node).
+
+```bash
+corepack enable
+pnpm install
+pnpm dev
+```
+
+Before opening a PR, run `pnpm lint`, `pnpm check`, `pnpm build` and `pnpm test:e2e`; CI runs the same steps. Deployment is covered in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ---
 

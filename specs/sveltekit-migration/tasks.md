@@ -43,9 +43,10 @@
 - [ ] **T006** Configure ESLint flat config: `eslint-plugin-svelte` recommended, `typescript-eslint` recommended, and ADR 0005's rule:
   ```js
   'no-restricted-imports': ['error', { patterns: [{
-    group: ['**/modules/*/!(index)', '**/modules/*/!(index)/**'],
+    group: ['**/modules/*/*', '!**/modules/*/index', '!**/modules/*/index.*'],
     message: 'Import from the module index, not its internals.' }] }]
   ```
+  ADR 0005's `!(index)` never matches: `group` uses gitignore syntax, which has no extglob, so the rule is written with negations instead.
   Add `"lint": "eslint ."`.
   - Depends: T005
   - Done when: `pnpm lint` passes; a throwaway deep import into `src/modules/x/y.ts` fails (then delete it).

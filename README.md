@@ -182,6 +182,28 @@ Whether you write code, design interfaces, or curate world-class playlists, **th
 - 🎨 **UI/UX Designers**: Design clean, distraction-free interfaces, study room ergonomics, and gamification feedback loops.
 - 📝 **Technical Writers & Translators**: Improve our documentation, contribute to architectural decision records, or translate OpenLearn for global learners.
 
+## Development Setup
+
+Requires Node.js 22.17 or newer (CI uses Node 24) and Corepack, which ships with Node. No accounts or API keys are needed locally.
+
+```bash
+corepack enable
+pnpm install
+pnpm dev        # http://localhost:5173
+```
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Dev server with hot reload |
+| `pnpm build` | Prerenders the site into `build/` |
+| `pnpm preview` | Serves `build/` locally |
+| `pnpm lint` | ESLint, including the module-boundary rule ([ADR 0005](docs/ADR/0005-repo-structure.md)) |
+| `pnpm check` | `svelte-check` type checking |
+| `pnpm test:e2e` | Playwright parity and accessibility tests |
+| `pnpm run deploy` | Build and upload to Cloudflare (needs credentials) |
+
+Use `pnpm run deploy`: plain `pnpm deploy` is a built-in pnpm command. See the [Deployment Guide](docs/DEPLOYMENT.md).
+
 To get started, please review:
 - 📖 [Contributing Guidelines](CONTRIBUTING.md)
 - 📜 [Code of Conduct](CODE_OF_CONDUCT.md)

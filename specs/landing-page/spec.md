@@ -118,6 +118,8 @@ The landing page follows the **TasteSkill Tactile Editorial** design system:
 
 ## 6. Directory & Code Architecture
 
+> **Superseded:** the directory architecture below was replaced by [SPEC-0002 §2.3](../sveltekit-migration/spec.md) when the landing page moved to SvelteKit.
+
 The implementation adheres to a modular, clean feature structure:
 
 ```text
