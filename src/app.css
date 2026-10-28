@@ -192,3 +192,18 @@ html, body {
   --font-newsreader: "Newsreader Variable";
   --font-jetbrains-mono: "JetBrains Mono Variable";
 }
+
+/* Respect reduced-motion: stop decorative animations and smooth anchor scrolling. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important; /* beats the .scroll-smooth class on <html> */
+  }
+
+  .animate-sensorBlink,
+  .animate-soundChipPulse,
+  .animate-badgePop,
+  .animate-pulse,
+  .animate-in {
+    animation: none;
+  }
+}

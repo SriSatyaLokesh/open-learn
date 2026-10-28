@@ -10,7 +10,14 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			adapter: adapter()
+			adapter: adapter(),
+			prerender: {
+				// The 404 page reuses the header, whose links are same-page anchors (#faq, ...) from the
+				// landing page; only there may they miss. Anywhere else a missing id stays a build error.
+				handleMissingId: ({ path, message }) => {
+					if (path !== '/404') throw new Error(message);
+				}
+			}
 		})
 	]
 });

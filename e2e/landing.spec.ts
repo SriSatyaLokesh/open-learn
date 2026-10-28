@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { LANDING_DATA as D } from '../src/lib/content/landingData.ts';
 
@@ -145,7 +146,7 @@ test('path: n3 default, node click updates drawer', async ({ page }) => {
 		await expect(section.locator('h4')).toHaveText(node.title);
 		await expect(drawer).toContainText(`Instructor: ${node.creator}`);
 		await expect(drawer).toContainText(node.conceptSummary);
-		await expect(btn(node.title)).toContainText(node.duration);
+		// The source drawer has no duration (only the node card shows it), so nothing to assert here.
 	}
 });
 
@@ -168,6 +169,10 @@ test('practice: submit disabled until selection; correct/incorrect; reset', asyn
 		await submit.click();
 		await expect(live).toContainText(label);
 		await expect(live).toContainText(q.explanation);
+		// After submit, picking another option changes nothing (React ignores it too).
+		await option(idx === wrong ? q.correctIndex : wrong).click();
+		await expect(live).toContainText(label);
+		await expect(live).toContainText(q.explanation);
 		await live.getByRole('button', { name: 'Try Again' }).click();
 		await expect(live).not.toContainText(q.explanation);
 	}
@@ -186,4 +191,88 @@ test('faq first open, others toggle independently', async ({ page }) => {
 	await items.nth(0).locator('summary').click();
 	await expect(items.nth(0)).not.toHaveAttribute('open', '');
 	await expect(items.nth(2)).toHaveAttribute('open', '');
+});
+
+test('prerendered HTML contains copy', async ({ request }) => {
+	const html = await (await request.get('/')).text();
+	expect(html).toContain(D.hero.headlinePrefix);
+	expect(html).toContain(D.hero.headlineEmphasis);
+	for (const { question } of D.faq) expect(html).toContain(question);
+});
+
+test('unknown path is a styled 404', async ({ page }) => {
+	const res = await page.goto('/does-not-exist');
+	expect(res?.status()).toBe(404);
+	expect(new URL(page.url()).pathname).toBe('/does-not-exist');
+	await expect(page.getByRole('heading', { level: 1, name: 'Page not found.' })).toBeVisible();
+	await expect(page.locator('main .badge-bracket')).toHaveText('404');
+	await expect(page.locator('main a[href="/"]')).toBeVisible();
+	await expect(page.locator('header').first()).toBeVisible();
+	// Static hosts serve this file for unknown paths; preview renders +error.svelte instead.
+	expect(existsSync('build/404.html')).toBe(true);
+});
+
+test('keyboard reaches and operates controls', async ({ page }, testInfo) => {
+	await page.goto('/');
+	const tabTo = async (target: import('@playwright/test').Locator) => {
+		for (let i = 0; i < 300; i++) {
+			if (await target.evaluate((el) => el === document.activeElement)) return;
+			await page.keyboard.press('Tab');
+		}
+		throw new Error('target not reachable by Tab');
+	};
+
+	if (testInfo.project.name === 'mobile-chromium') {
+		const toggle = page.getByRole('button', { name: 'Toggle navigation menu' });
+		await tabTo(toggle);
+		await page.keyboard.press('Enter');
+		await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+		await page.keyboard.press('Enter');
+		await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+	}
+
+	const queue = D.hero.mockup.queue;
+	const heroBtn = page.locator('#hero').getByRole('button').filter({ hasText: queue[0].title });
+	await tabTo(heroBtn);
+	await page.keyboard.press('Enter');
+	await expect(heroBtn).toHaveAttribute('aria-pressed', 'true');
+
+	const curriculum = page.locator('#curriculum');
+	const node = D.curriculumVisualizer.samplePath.nodes[0];
+	const nodeBtn = curriculum.getByRole('button').filter({ hasText: node.title });
+	await tabTo(nodeBtn);
+	await page.keyboard.press('Space');
+	await expect(nodeBtn).toHaveAttribute('aria-pressed', 'true');
+	await expect(curriculum.locator('h4')).toHaveText(node.title);
+
+	const practice = page.locator('#practice');
+	const q = D.practice.sampleQuestions[0];
+	await tabTo(practice.getByRole('button').filter({ hasText: q.options[q.correctIndex] }));
+	await page.keyboard.press('Enter');
+	await tabTo(practice.getByRole('button', { name: 'Check Answer' }));
+	await page.keyboard.press('Enter');
+	await expect(practice.locator('[aria-live="polite"]')).toContainText('CORRECT REINFORCEMENT');
+});
+
+test('reduced motion disables animation and smooth scroll', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/');
+	// Show the practice feedback so an .animate-in element is present too.
+	const practice = page.locator('#practice');
+	const q = D.practice.sampleQuestions[0];
+	await practice.getByRole('button').filter({ hasText: q.options[0] }).click();
+	await practice.getByRole('button', { name: 'Check Answer' }).click();
+
+	const animated = page.locator(
+		'.animate-sensorBlink, .animate-soundChipPulse, .animate-badgePop, .animate-pulse, .animate-in'
+	);
+	const names = await animated.evaluateAll((els) =>
+		els.map((el) => ({ cls: el.className, anim: getComputedStyle(el).animationName }))
+	);
+	for (const cls of ['animate-sensorBlink', 'animate-pulse', 'animate-in'])
+		expect(names.some((n) => n.cls.includes(cls))).toBe(true);
+	for (const n of names) expect(n.anim, n.cls).toBe('none');
+	expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe(
+		'auto'
+	);
 });
