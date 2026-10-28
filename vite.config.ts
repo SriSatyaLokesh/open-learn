@@ -11,6 +11,8 @@ export default defineConfig({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 			adapter: adapter(),
+			// Absolute /_app/ URLs: 404.html is served at any depth (/a/b/), where ./_app would miss.
+			paths: { relative: false },
 			prerender: {
 				// The 404 page reuses the header, whose links are same-page anchors (#faq, ...) from the
 				// landing page; only there may they miss. Anywhere else a missing id stays a build error.
