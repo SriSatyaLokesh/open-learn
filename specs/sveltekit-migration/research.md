@@ -76,6 +76,18 @@ Read from npm on 2026-10-28. The plan installs these exact majors; minor/patch m
 - 404: SvelteKit emits `404.html` only with an explicit route or `fallback`; the plan adds a prerendered `+error.svelte` and verifies `build/404.html` exists (T030). If Kit 3 does not emit it from `+error.svelte`, add a prerendered `src/routes/404/+page.svelte` and copy to `404.html` in a postbuild step.
 - Hydration: Svelte hydrates the whole page; only components with `$state` carry meaningful JS. Expect total JS well below the Next.js App Router baseline (to be measured, AC-21).
 
+### v3 changes affecting us
+
+Source: [Migrating to SvelteKit 3](https://svelte.dev/docs/kit/migrating-to-sveltekit-3), read 2026-10-28, cross-checked against `npx sv@1.1.1 create` output.
+
+- **No `svelte.config.js`.** It is no longer supported. Kit options (including `adapter`) and `compilerOptions` go into the `sveltekit({...})` plugin in `vite.config.ts`.
+- **`$lib` is gone; use `#lib`.** Declared as `"imports": { "#lib/*": "./src/lib/*" }` in `package.json` (Node subpath imports). Imports need explicit extensions: `import { cn } from '#lib/utils.js'`. Every later task that says `$lib/...` means `#lib/....js`.
+- **tsconfig** extends `"$app/tsconfig"` (not `./.svelte-kit/tsconfig.json`) and must declare its own `include`.
+- `$app/environment` → `$app/env`; `$app/stores` removed (use `$app/state`). Not used by the landing page.
+- `prerender.origin` → `paths.origin`. Not used.
+- adapter-static: no breaking change listed; v4 requires Kit 3. `build/index.html` is emitted with `prerender = true`. No `404.html` is emitted without a route for it (as expected above; T030 still owns it).
+- Requirements match R2: Node ≥ 22.17, TypeScript ≥ 6, Svelte ≥ 5.57.1, Vite ≥ 8.0.12.
+
 ## R5. React → Svelte translation reference
 
 | React (current) | Svelte 5 (target) |
