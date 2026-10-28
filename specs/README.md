@@ -33,6 +33,7 @@ Every specification in this directory follows a standard structure:
 | Specification | ID | Scope | Target Route | Status |
 |---|---|---|---|---|
 | [`landing-page/spec.md`](./landing-page/spec.md) | `SPEC-0001` | Public landing page, narrative flow, interactive preview sandboxes, and SEO/AEO metadata | `/` | `Implemented` |
+| [`sveltekit-migration/spec.md`](./sveltekit-migration/spec.md) | `SPEC-0002` | Port landing page to SvelteKit; static delivery on Cloudflare; frontend toolchain | `/` | `Draft` |
 | [`multi-agent-orchestrator/spec.md`](./multi-agent-orchestrator/spec.md) | `SYS-0001` | Autonomous GitHub delivery and verification engine (MACO) | CI/CD & GitHub Actions | `Architecture Record` |
 | [`landing-page/plan.md`](./landing-page/plan.md) | `PLAN-0001` | Original 12-section product positioning, messaging audit, and UX strategy | `/` | `Archived Reference` |
 
