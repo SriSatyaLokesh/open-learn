@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { LANDING_DATA as D } from '../src/lib/content/landingData.ts';
 
 const TITLE = 'OpenLearn — Turn Online Content Into Learning You Can Finish';
 const DESCRIPTION =
@@ -82,4 +83,26 @@ test('serif italic resolves to Newsreader italic', async ({ page }) => {
 			);
 	});
 	expect(loaded).toBe(true);
+});
+
+// SPEC-0001 order, restricted to sections ported so far; Task 5 switches to absolute indices.
+const SECTIONS: { id?: string; heading: string }[] = [
+	{ id: 'problem', heading: D.audit.titlePrefix },
+	{ heading: D.transformation.headline },
+	{ id: 'how-it-works', heading: D.howItWorks.titlePrefix },
+	{ heading: D.distractionFree.titlePrefix },
+	{ heading: 'Always know where you are and' }
+];
+
+test('sections render in SPEC-0001 order', async ({ page }) => {
+	await page.goto('/');
+	const sections = page.locator('main > section');
+	await expect(sections).toHaveCount(SECTIONS.length);
+	const found = await sections.evaluateAll((els) =>
+		els.map((el) => ({ id: el.id, h2: el.querySelector('h2')?.textContent?.replace(/\s+/g, ' ') ?? '' }))
+	);
+	SECTIONS.forEach((s, i) => {
+		if (s.id) expect(found[i].id).toBe(s.id);
+		expect(found[i].h2).toContain(s.heading);
+	});
 });

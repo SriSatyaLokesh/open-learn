@@ -11,7 +11,7 @@ export default defineConfig({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 			adapter: adapter(),
-			// shortcut: nav links target section ids that land in Task 3; restore the default 'fail' once every section exists.
+			// shortcut: nav links target section ids that land in Task 5; restore the default 'fail' once every section exists.
 			prerender: { handleMissingId: 'warn' }
 		})
 	]
