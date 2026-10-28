@@ -1,9 +1,12 @@
 <script lang="ts">
 	import {
+		HeroSection,
 		ProblemAudit,
 		SolutionPipeline,
 		HowItWorks,
 		DistractionFree,
+		PathVisualizer,
+		PracticeDemo,
 		ProgressHud,
 		OpenCurriculum,
 		AudienceSection,
@@ -12,11 +15,13 @@
 	} from '#lib/components/landing/index.js';
 </script>
 
-<!-- Slots for HeroSection (before), PathVisualizer/PracticeDemo (after DistractionFree) and the rest are filled in later tasks. -->
+<HeroSection />
 <ProblemAudit />
 <SolutionPipeline />
 <HowItWorks />
 <DistractionFree />
+<PathVisualizer />
+<PracticeDemo />
 <ProgressHud />
 <OpenCurriculum />
 <AudienceSection />

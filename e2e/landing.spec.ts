@@ -85,12 +85,15 @@ test('serif italic resolves to Newsreader italic', async ({ page }) => {
 	expect(loaded).toBe(true);
 });
 
-// SPEC-0001 order, restricted to sections ported so far; Task 5 switches to absolute indices.
-const SECTIONS: { id?: string; heading: string }[] = [
+// SPEC-0001 order: all 12 sections at absolute indices (hero has an h1, not an h2).
+const SECTIONS: { id?: string; heading?: string }[] = [
+	{ id: 'hero' },
 	{ id: 'problem', heading: D.audit.titlePrefix },
 	{ heading: D.transformation.headline },
 	{ id: 'how-it-works', heading: D.howItWorks.titlePrefix },
 	{ heading: D.distractionFree.titlePrefix },
+	{ id: 'curriculum', heading: D.curriculumVisualizer.titlePrefix },
+	{ id: 'practice', heading: D.practice.titlePrefix },
 	{ heading: 'Always know where you are and' },
 	{ heading: D.openLearning.titlePrefix },
 	{ heading: 'Built for people who learn from the' },
@@ -101,14 +104,74 @@ const SECTIONS: { id?: string; heading: string }[] = [
 test('sections render in SPEC-0001 order', async ({ page }) => {
 	await page.goto('/');
 	const sections = page.locator('main > section');
-	await expect(sections).toHaveCount(SECTIONS.length);
+	await expect(sections).toHaveCount(12);
 	const found = await sections.evaluateAll((els) =>
 		els.map((el) => ({ id: el.id, h2: el.querySelector('h2')?.textContent?.replace(/\s+/g, ' ') ?? '' }))
 	);
 	SECTIONS.forEach((s, i) => {
 		if (s.id) expect(found[i].id).toBe(s.id);
-		expect(found[i].h2).toContain(s.heading);
+		if (s.heading) expect(found[i].h2).toContain(s.heading);
 	});
+});
+
+test('hero: q3 active by default, clicking switches concept', async ({ page }) => {
+	await page.goto('/');
+	const hero = page.locator('#hero');
+	const queue = D.hero.mockup.queue;
+	const btn = (title: string) => hero.getByRole('button').filter({ hasText: title });
+	await expect(btn(queue[2].title)).toHaveAttribute('aria-pressed', 'true');
+	await expect(hero.getByText(`Active Concept: ${queue[2].title}`)).toBeVisible();
+	for (const item of queue) {
+		await btn(item.title).click();
+		await expect(btn(item.title)).toHaveAttribute('aria-pressed', 'true');
+		await expect(hero.getByText(`Active Concept: ${item.title}`)).toBeVisible();
+		await expect(hero.getByRole('heading', { name: `${item.step}: ${item.title}` })).toBeVisible();
+		for (const other of queue.filter((q) => q.id !== item.id))
+			await expect(btn(other.title)).toHaveAttribute('aria-pressed', 'false');
+	}
+});
+
+test('path: n3 default, node click updates drawer', async ({ page }) => {
+	await page.goto('/');
+	const section = page.locator('#curriculum');
+	const nodes = D.curriculumVisualizer.samplePath.nodes;
+	const drawer = section.locator('h4').locator('xpath=../..');
+	const btn = (title: string) => section.getByRole('button').filter({ hasText: title });
+	await expect(btn(nodes[2].title)).toHaveAttribute('aria-pressed', 'true');
+	await expect(section.locator('h4')).toHaveText(nodes[2].title);
+	for (const node of nodes) {
+		await btn(node.title).click();
+		await expect(btn(node.title)).toHaveAttribute('aria-pressed', 'true');
+		await expect(section.locator('h4')).toHaveText(node.title);
+		await expect(drawer).toContainText(`Instructor: ${node.creator}`);
+		await expect(drawer).toContainText(node.conceptSummary);
+		await expect(btn(node.title)).toContainText(node.duration);
+	}
+});
+
+test('practice: submit disabled until selection; correct/incorrect; reset', async ({ page }) => {
+	await page.goto('/');
+	const section = page.locator('#practice');
+	const q = D.practice.sampleQuestions[0];
+	const submit = section.getByRole('button', { name: 'Check Answer' });
+	const live = section.locator('[aria-live="polite"]');
+	const option = (i: number) => section.getByRole('button').filter({ hasText: q.options[i] });
+	const wrong = q.correctIndex === 0 ? 1 : 0;
+
+	for (const [idx, label] of [
+		[q.correctIndex, 'CORRECT REINFORCEMENT'],
+		[wrong, 'INCORRECT RETRIEVAL']
+	] as const) {
+		await expect(submit).toBeDisabled();
+		await option(idx).click();
+		await expect(submit).toBeEnabled();
+		await submit.click();
+		await expect(live).toContainText(label);
+		await expect(live).toContainText(q.explanation);
+		await live.getByRole('button', { name: 'Try Again' }).click();
+		await expect(live).not.toContainText(q.explanation);
+	}
+	await expect(submit).toBeDisabled();
 });
 
 test('faq first open, others toggle independently', async ({ page }) => {

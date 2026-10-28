@@ -10,9 +10,7 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			adapter: adapter(),
-			// shortcut: nav links target section ids that land in Task 5; restore the default 'fail' once every section exists.
-			prerender: { handleMissingId: 'warn' }
+			adapter: adapter()
 		})
 	]
 });
