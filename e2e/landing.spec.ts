@@ -267,11 +267,17 @@ test('reduced motion disables animation and smooth scroll', async ({ page }) => 
 		'.animate-sensorBlink, .animate-soundChipPulse, .animate-badgePop, .animate-pulse, .animate-in'
 	);
 	const names = await animated.evaluateAll((els) =>
-		els.map((el) => ({ cls: el.className, anim: getComputedStyle(el).animationName }))
+		els.map((el) => ({ cls: el.getAttribute('class') ?? '', anim: getComputedStyle(el).animationName }))
 	);
 	for (const cls of ['animate-sensorBlink', 'animate-pulse', 'animate-in'])
 		expect(names.some((n) => n.cls.includes(cls))).toBe(true);
 	for (const n of names) expect(n.anim, n.cls).toBe('none');
+	const transitioned = page.locator('.transition-all, .transition-transform, .transition-colors');
+	await expect(transitioned.first()).toBeAttached();
+	const durations = await transitioned.evaluateAll((els) =>
+		els.map((el) => getComputedStyle(el).transitionDuration)
+	);
+	for (const d of durations) expect(d).toBe('0s');
 	expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe(
 		'auto'
 	);

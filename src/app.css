@@ -206,4 +206,10 @@ html, body {
   .animate-in {
     animation: none;
   }
+
+  .transition-all,
+  .transition-transform,
+  .transition-colors {
+    transition: none;
+  }
 }
