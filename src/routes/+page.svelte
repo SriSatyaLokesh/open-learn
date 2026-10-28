@@ -4,7 +4,11 @@
 		SolutionPipeline,
 		HowItWorks,
 		DistractionFree,
-		ProgressHud
+		ProgressHud,
+		OpenCurriculum,
+		AudienceSection,
+		FaqSection,
+		BottomCta
 	} from '#lib/components/landing/index.js';
 </script>
 
@@ -14,3 +18,7 @@
 <HowItWorks />
 <DistractionFree />
 <ProgressHud />
+<OpenCurriculum />
+<AudienceSection />
+<FaqSection />
+<BottomCta />

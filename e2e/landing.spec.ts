@@ -91,7 +91,11 @@ const SECTIONS: { id?: string; heading: string }[] = [
 	{ heading: D.transformation.headline },
 	{ id: 'how-it-works', heading: D.howItWorks.titlePrefix },
 	{ heading: D.distractionFree.titlePrefix },
-	{ heading: 'Always know where you are and' }
+	{ heading: 'Always know where you are and' },
+	{ heading: D.openLearning.titlePrefix },
+	{ heading: 'Built for people who learn from the' },
+	{ id: 'faq', heading: 'Frequently asked' },
+	{ heading: D.bottomCta.headlinePrefix }
 ];
 
 test('sections render in SPEC-0001 order', async ({ page }) => {
@@ -105,4 +109,18 @@ test('sections render in SPEC-0001 order', async ({ page }) => {
 		if (s.id) expect(found[i].id).toBe(s.id);
 		expect(found[i].h2).toContain(s.heading);
 	});
+});
+
+test('faq first open, others toggle independently', async ({ page }) => {
+	await page.goto('/');
+	const items = page.locator('#faq details');
+	await expect(items.first()).toHaveAttribute('open', '');
+	const n = await items.count();
+	for (let i = 1; i < n; i++) await expect(items.nth(i)).not.toHaveAttribute('open', '');
+	await items.nth(2).locator('summary').click();
+	await expect(items.nth(0)).toHaveAttribute('open', '');
+	await expect(items.nth(2)).toHaveAttribute('open', '');
+	await items.nth(0).locator('summary').click();
+	await expect(items.nth(0)).not.toHaveAttribute('open', '');
+	await expect(items.nth(2)).toHaveAttribute('open', '');
 });

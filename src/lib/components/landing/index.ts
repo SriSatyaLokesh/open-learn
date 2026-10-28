@@ -8,3 +8,7 @@ export { default as SolutionPipeline } from './SolutionPipeline.svelte';
 export { default as HowItWorks } from './HowItWorks.svelte';
 export { default as DistractionFree } from './DistractionFree.svelte';
 export { default as ProgressHud } from './ProgressHud.svelte';
+export { default as OpenCurriculum } from './OpenCurriculum.svelte';
+export { default as AudienceSection } from './AudienceSection.svelte';
+export { default as FaqSection } from './FaqSection.svelte';
+export { default as BottomCta } from './BottomCta.svelte';
