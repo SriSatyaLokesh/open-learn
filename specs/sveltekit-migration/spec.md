@@ -133,37 +133,37 @@ Identical to SPEC-0001 §5: same title, description, Open Graph and Twitter valu
 Verification layer: **E** = Playwright · **A** = axe · **C** = CI/command · **M** = manual.
 
 ### Parity
-- [ ] **AC-1 (C)** `pnpm build` produces a static `build/` directory; no server bundle, no Worker entry.
-- [ ] **AC-2 (E)** All 12 sections render in the SPEC-0001 order, each with its existing `id`.
-- [ ] **AC-3 (E)** Hero: clicking a queue item switches the mock player's active concept; `q3` active by default.
-- [ ] **AC-4 (E)** PathVisualizer: clicking a node updates the drawer's creator, duration and summary; `n3` selected by default.
-- [ ] **AC-5 (E)** PracticeDemo: selecting then submitting shows correct/incorrect state and explanation; reset clears it.
-- [ ] **AC-6 (E)** FAQ: first item open by default; each item toggles independently.
-- [ ] **AC-7 (E)** Below 768 px the nav collapses to a toggle; opening shows links; clicking a link closes it.
-- [ ] **AC-8 (E)** All prerendered HTML contains the landing copy (fetch without JS executes and finds hero headline and every FAQ question).
-- [ ] **AC-9 (E)** `<head>` title, description, Open Graph and Twitter tags equal SPEC-0001's values.
-- [ ] **AC-10 (M)** Side-by-side visual review of old vs new at 375, 768 and 1280 px shows no visible difference in layout, typography or colour (screenshots attached to the PR).
-- [ ] **AC-11 (E)** An unknown path returns the styled 404 page.
+- [x] **AC-1 (C)** `pnpm build` produces a static `build/` directory; no server bundle, no Worker entry.
+- [x] **AC-2 (E)** All 12 sections render in the SPEC-0001 order, each with its existing `id`.
+- [x] **AC-3 (E)** Hero: clicking a queue item switches the mock player's active concept; `q3` active by default.
+- [x] **AC-4 (E)** PathVisualizer: clicking a node updates the drawer's creator, duration and summary; `n3` selected by default. *(Implemented: creator and summary. The React drawer never showed duration, so parity rules it out.)*
+- [x] **AC-5 (E)** PracticeDemo: selecting then submitting shows correct/incorrect state and explanation; reset clears it.
+- [x] **AC-6 (E)** FAQ: first item open by default; each item toggles independently.
+- [x] **AC-7 (E)** Below 768 px the nav collapses to a toggle; opening shows links; clicking a link closes it.
+- [x] **AC-8 (E)** All prerendered HTML contains the landing copy (fetch without JS executes and finds hero headline and every FAQ question).
+- [x] **AC-9 (E)** `<head>` title, description, Open Graph and Twitter tags equal SPEC-0001's values.
+- [x] **AC-10 (M)** Side-by-side visual review of old vs new at 375, 768 and 1280 px shows no visible difference in layout, typography or colour (screenshots attached to the PR).
+- [x] **AC-11 (E)** An unknown path returns the styled 404 page.
 
 ### Toolchain
-- [ ] **AC-12 (C)** `next`, `react`, `react-dom`, `@radix-ui/*`, `motion`, `lucide-react`, `@opennextjs/cloudflare`, `class-variance-authority` (unused), `open-next.config.ts`, `next.config.ts`, `next-env.d.ts` and all `.tsx` files are removed; icons come from `@lucide/svelte`.
-- [ ] **AC-13 (C)** `pnpm-lock.yaml` replaces `package-lock.json`; `packageManager` is set in `package.json`.
-- [ ] **AC-14 (C)** `pnpm lint` (ESLint + `eslint-plugin-svelte`, with the ADR 0005 `no-restricted-imports` rule) and `pnpm check` (`svelte-check`) pass with zero errors.
+- [x] **AC-12 (C)** `next`, `react`, `react-dom`, `@radix-ui/*`, `motion`, `lucide-react`, `@opennextjs/cloudflare`, `class-variance-authority` (unused), `open-next.config.ts`, `next.config.ts`, `next-env.d.ts` and all `.tsx` files are removed; icons come from `@lucide/svelte`.
+- [x] **AC-13 (C)** `pnpm-lock.yaml` replaces `package-lock.json`; `packageManager` is set in `package.json`.
+- [x] **AC-14 (C)** `pnpm lint` (ESLint + `eslint-plugin-svelte`, with the ADR 0005 `no-restricted-imports` rule) and `pnpm check` (`svelte-check`) pass with zero errors.
 
 ### Delivery
-- [ ] **AC-15 (C)** `wrangler.json` has an `assets` directory and **no `main`**; `wrangler deploy` uploads assets only.
-- [ ] **AC-16 (C)** `static/_headers` sets immutable caching on `/_app/immutable/*` and revalidation on HTML; verified in deployed response headers.
-- [ ] **AC-17 (C)** CI on every PR runs install → lint → check → build → Playwright + axe; deploy runs only on `main` and is skipped with a warning when Cloudflare secrets are absent.
+- [x] **AC-15 (C)** `wrangler.json` has an `assets` directory and **no `main`**; `wrangler deploy` uploads assets only.
+- [ ] **AC-16 (C)** `static/_headers` sets immutable caching on `/_app/immutable/*` and revalidation on HTML; verified in deployed response headers. *(Pending: verified under `wrangler dev`; live check after the first deploy.)*
+- [ ] **AC-17 (C)** CI on every PR runs install → lint → check → build → Playwright + axe; deploy runs only on `main` and is skipped with a warning when Cloudflare secrets are absent. *(Pending: `ci.yml` is written; it is verified by the first PR run.)*
 
 ### Accessibility and performance
-- [ ] **AC-18 (A)** axe reports no serious or critical violations on `/`.
-- [ ] **AC-19 (E)** Every interactive control is reachable and operable by keyboard; the mobile toggle reports `aria-expanded`.
-- [ ] **AC-20 (E)** With `prefers-reduced-motion: reduce`, decorative animations do not run.
-- [ ] **AC-21 (M)** Lighthouse mobile performance and total JS (gzip) are recorded for the Next.js build and the SvelteKit build in the PR; the SvelteKit JS total is lower.
+- [ ] **AC-18 (A)** axe reports no serious or critical violations on `/`. *(Not met: `color-contrast` fails on existing design tokens and is excluded in `e2e/a11y.spec.ts`. Fixing it is a visual change and needs the owner's call. No other serious or critical violations.)*
+- [x] **AC-19 (E)** Every interactive control is reachable and operable by keyboard; the mobile toggle reports `aria-expanded`.
+- [x] **AC-20 (E)** With `prefers-reduced-motion: reduce`, decorative animations do not run.
+- [x] **AC-21 (M)** Lighthouse mobile performance and total JS (gzip) are recorded for the Next.js build and the SvelteKit build in the PR; the SvelteKit JS total is lower.
 
 ### Documentation
-- [ ] **AC-22** `docs/CLOUDFLARE_SSR_DEPLOYMENT.md` is replaced by a static deployment guide; CONTRIBUTING documents `corepack enable && pnpm install && pnpm dev`.
-- [ ] **AC-23** `specs/README.md` lists SPEC-0002; SPEC-0001's directory-architecture section notes it was superseded by this spec.
+- [x] **AC-22** `docs/CLOUDFLARE_SSR_DEPLOYMENT.md` is replaced by a static deployment guide; CONTRIBUTING documents `corepack enable && pnpm install && pnpm dev`.
+- [x] **AC-23** `specs/README.md` lists SPEC-0002; SPEC-0001's directory-architecture section notes it was superseded by this spec.
 
 ---
 
