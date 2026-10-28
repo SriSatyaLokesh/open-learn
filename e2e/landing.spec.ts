@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { LANDING_DATA as D } from '../src/lib/content/landingData.ts';
+import { open } from './open.ts';
 
 const TITLE = 'OpenLearn — Turn Online Content Into Learning You Can Finish';
 const DESCRIPTION =
@@ -48,7 +49,7 @@ test('head metadata matches SPEC-0001', async ({ request, page }) => {
 
 test('mobile menu toggles and closes on link click', async ({ page }, testInfo) => {
 	test.skip(testInfo.project.name !== 'mobile-chromium', 'mobile-only behaviour');
-	await page.goto('/');
+	await open(page);
 
 	const toggle = page.getByRole('button', { name: 'Toggle navigation menu' });
 	await expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -116,7 +117,7 @@ test('sections render in SPEC-0001 order', async ({ page }) => {
 });
 
 test('hero: q3 active by default, clicking switches concept', async ({ page }) => {
-	await page.goto('/');
+	await open(page);
 	const hero = page.locator('#hero');
 	const queue = D.hero.mockup.queue;
 	const btn = (title: string) => hero.getByRole('button').filter({ hasText: title });
@@ -133,7 +134,7 @@ test('hero: q3 active by default, clicking switches concept', async ({ page }) =
 });
 
 test('path: n3 default, node click updates drawer', async ({ page }) => {
-	await page.goto('/');
+	await open(page);
 	const section = page.locator('#curriculum');
 	const nodes = D.curriculumVisualizer.samplePath.nodes;
 	const drawer = section.locator('h4').locator('xpath=../..');
@@ -151,7 +152,7 @@ test('path: n3 default, node click updates drawer', async ({ page }) => {
 });
 
 test('practice: submit disabled until selection; correct/incorrect; reset', async ({ page }) => {
-	await page.goto('/');
+	await open(page);
 	const section = page.locator('#practice');
 	const q = D.practice.sampleQuestions[0];
 	const submit = section.getByRole('button', { name: 'Check Answer' });
@@ -180,7 +181,7 @@ test('practice: submit disabled until selection; correct/incorrect; reset', asyn
 });
 
 test('faq first open, others toggle independently', async ({ page }) => {
-	await page.goto('/');
+	await open(page);
 	const items = page.locator('#faq details');
 	await expect(items.first()).toHaveAttribute('open', '');
 	const n = await items.count();
@@ -213,7 +214,7 @@ test('unknown path is a styled 404', async ({ page }) => {
 });
 
 test('keyboard reaches and operates controls', async ({ page }, testInfo) => {
-	await page.goto('/');
+	await open(page);
 	const tabTo = async (target: import('@playwright/test').Locator) => {
 		for (let i = 0; i < 300; i++) {
 			if (await target.evaluate((el) => el === document.activeElement)) return;
@@ -256,7 +257,7 @@ test('keyboard reaches and operates controls', async ({ page }, testInfo) => {
 
 test('reduced motion disables animation and smooth scroll', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
-	await page.goto('/');
+	await open(page);
 	// Show the practice feedback so an .animate-in element is present too.
 	const practice = page.locator('#practice');
 	const q = D.practice.sampleQuestions[0];
