@@ -1,11 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "open-learn",
-  "main": ".open-next/worker.js",
-  "compatibility_date": "2025-02-14",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2026-10-28",
   "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
+    "directory": "./build",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
   }
 }

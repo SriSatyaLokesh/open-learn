@@ -173,10 +173,8 @@ Done when (each): renders without console errors; side-by-side with the matching
   ```txt
   /_app/immutable/*
     Cache-Control: public, max-age=31536000, immutable
-  /*
-    Cache-Control: public, max-age=0, must-revalidate
   ```
-  Confirm rule order gives immutable assets the long TTL (more specific rule must win; adjust if Cloudflare merges headers).
+  No `/*` rule: Cloudflare merges values of all matching rules, so it would add `max-age=0, must-revalidate` to hashed assets too. HTML gets Cloudflare's default `public, max-age=0, must-revalidate`.
   - Depends: T005
   - Done when: `build/_headers` present; `wrangler dev` responses show the expected headers.
   - AC: 16

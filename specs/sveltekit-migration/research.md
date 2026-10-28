@@ -149,6 +149,8 @@ ADRs are used as written; this section is the record of choices they leave open.
 | Path | `Cache-Control` |
 |---|---|
 | `/_app/immutable/*` | `public, max-age=31536000, immutable` |
-| HTML | `public, max-age=0, must-revalidate` |
+| HTML | no rule; Cloudflare's default `public, max-age=0, must-revalidate` applies |
+
+The file holds only the `/_app/immutable/*` rule: Cloudflare merges the values of every matching `_headers` rule, so a `/*` rule would also add `max-age=0, must-revalidate` to hashed assets.
 
 `not_found_handling` moves to `single-page-application` when client-rendered app routes arrive.
