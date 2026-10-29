@@ -58,5 +58,5 @@ export async function seedPath(client: SupabaseClient) {
 			.select('id')
 			.single()
 	);
-	return { pathId: path.id as string, resourceId: res.id as string };
+	return { pathId: path.id, moduleId: mod.id, conceptId: concept.id, resourceId: res.id };
 }

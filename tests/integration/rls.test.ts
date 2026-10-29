@@ -31,6 +31,42 @@ describe('RLS', () => {
 		expect(error?.code).toBe('42501');
 	});
 
+	it("guest B cannot attach a concept to A's module", async () => {
+		const a = await guest();
+		const b = await guest();
+		const { moduleId } = await seedPath(a);
+		const { pathId } = await seedPath(b);
+		const { error } = await b
+			.from('concept')
+			.insert({ module_id: moduleId, path_id: pathId, title: 'x', order_key: 'z' });
+		expect(error?.code).toBe('23503');
+	});
+
+	it("guest B cannot attach a resource to A's concept", async () => {
+		const a = await guest();
+		const b = await guest();
+		const { conceptId } = await seedPath(a);
+		const { pathId } = await seedPath(b);
+		const { data: v } = await service().from('video').select('id').limit(1).single();
+		const { error } = await b.from('resource').insert({
+			concept_id: conceptId,
+			path_id: pathId,
+			video_id: v!.id,
+			kind: 'alternative',
+			order_key: 'z'
+		});
+		expect(error?.code).toBe('23503');
+	});
+
+	it("guest B cannot re-point own resource at A's concept", async () => {
+		const a = await guest();
+		const b = await guest();
+		const { conceptId } = await seedPath(a);
+		const { resourceId } = await seedPath(b);
+		const { error } = await b.from('resource').update({ concept_id: conceptId, kind: 'alternative' }).eq('id', resourceId);
+		expect(error?.code).toBe('23503');
+	});
+
 	it('authenticated user cannot write video', async () => {
 		const g = await guest();
 		await seedPath(await guest()); // ensures a video row exists

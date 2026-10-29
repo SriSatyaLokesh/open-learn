@@ -37,7 +37,8 @@ create table module (
   id        uuid primary key default gen_random_uuid(),
   path_id   uuid not null references learning_path(id) on delete cascade,
   title     text not null,
-  order_key text not null
+  order_key text not null,
+  unique (id, path_id)
 );
 
 create table concept (
@@ -45,7 +46,10 @@ create table concept (
   module_id uuid not null references module(id) on delete cascade,
   path_id   uuid not null references learning_path(id) on delete cascade,
   title     text not null,
-  order_key text not null
+  order_key text not null,
+  unique (id, path_id),
+  -- Bind the child to its parent's path so RLS on path_id cannot be bypassed cross-tenant.
+  foreign key (module_id, path_id) references module (id, path_id) on delete cascade
 );
 
 create index on learning_path (author_id);
@@ -82,7 +86,8 @@ create table resource (
   order_key     text not null,
   health_status text not null default 'ok' check (health_status in ('ok','broken','replaced')),
   source_url    text,
-  created_at    timestamptz not null default now()
+  created_at    timestamptz not null default now(),
+  foreign key (concept_id, path_id) references concept (id, path_id) on delete cascade
 );
 
 create index on resource (concept_id, order_key);
