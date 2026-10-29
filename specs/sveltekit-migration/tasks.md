@@ -43,9 +43,10 @@
 - [ ] **T006** Configure ESLint flat config: `eslint-plugin-svelte` recommended, `typescript-eslint` recommended, and ADR 0005's rule:
   ```js
   'no-restricted-imports': ['error', { patterns: [{
-    group: ['**/modules/*/!(index)', '**/modules/*/!(index)/**'],
+    group: ['**/modules/*/*', '!**/modules/*/index', '!**/modules/*/index.*'],
     message: 'Import from the module index, not its internals.' }] }]
   ```
+  ADR 0005's `!(index)` never matches: `group` uses gitignore syntax, which has no extglob, so the rule is written with negations instead.
   Add `"lint": "eslint ."`.
   - Depends: T005
   - Done when: `pnpm lint` passes; a throwaway deep import into `src/modules/x/y.ts` fails (then delete it).
@@ -173,10 +174,8 @@ Done when (each): renders without console errors; side-by-side with the matching
   ```txt
   /_app/immutable/*
     Cache-Control: public, max-age=31536000, immutable
-  /*
-    Cache-Control: public, max-age=0, must-revalidate
   ```
-  Confirm rule order gives immutable assets the long TTL (more specific rule must win; adjust if Cloudflare merges headers).
+  No `/*` rule: Cloudflare merges values of all matching rules, so it would add `max-age=0, must-revalidate` to hashed assets too. HTML gets Cloudflare's default `public, max-age=0, must-revalidate`.
   - Depends: T005
   - Done when: `build/_headers` present; `wrangler dev` responses show the expected headers.
   - AC: 16

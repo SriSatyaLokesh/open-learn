@@ -61,7 +61,7 @@ curl -sI https://<your-domain>/ | grep -i cache-control
 curl -sI https://<your-domain>/_app/immutable/<any-file>.js | grep -i cache-control
 ```
 
-Expected: `max-age=0, must-revalidate` for HTML; `max-age=31536000, immutable` for hashed assets.
+Expected: `public, max-age=0, must-revalidate` for HTML (Cloudflare's default; `_headers` has no `/*` rule because matching rules merge); exactly `public, max-age=31536000, immutable` for hashed assets.
 
 ## Rollback
 

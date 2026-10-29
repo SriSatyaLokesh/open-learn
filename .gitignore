@@ -11,10 +11,11 @@ node_modules/
 dist/
 build/
 out/
-.next/
-.open-next/
 .wrangler/
 .turbo/
+.svelte-kit/
+test-results/
+playwright-report/
 coverage/
 
 # Environment and Secrets
