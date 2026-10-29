@@ -14,10 +14,8 @@ SvelteKit ships 50% less JS (gzip) and removes main-thread blocking time (AC-21 
 
 ## Visual parity (AC-10)
 
-`scripts/capture-screenshots.mjs` captured the same 43 states from both builds: full page, the mobile menu, every hero queue item, every path node, both practice outcomes and all FAQ items open, at 375/768/1280. A per-pixel comparison (any channel delta > 16) found:
+A one-off Playwright script captured the same 43 states from both builds: full page, the mobile menu, every hero queue item, every path node, both practice outcomes and all FAQ items open, at 375/768/1280. A per-pixel comparison (any channel delta > 16) found:
 
 - **Full page, 3 viewports:** 0.02–0.04% of pixels differ, all anti-aliasing.
 - **Hero, path and menu states:** 0.04–0.52% differ.
 - **`practice-correct` (9.6–10.5%) and `faq-all-open` (1.9–3.3%):** the only outliers. On inspection, both come from the sticky header sitting at a different scroll offset in the element screenshot, plus a 1 px vertical offset below the first FAQ card. The section content is identical.
-
-`baseline/` and `after/` hold the four full-page and menu-open captures; the full 43-image sets are attached to the PR.
