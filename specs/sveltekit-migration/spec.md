@@ -142,7 +142,7 @@ Verification layer: **E** = Playwright · **A** = axe · **C** = CI/command · *
 - [x] **AC-7 (E)** Below 768 px the nav collapses to a toggle; opening shows links; clicking a link closes it.
 - [x] **AC-8 (E)** All prerendered HTML contains the landing copy (fetch without JS executes and finds hero headline and every FAQ question).
 - [x] **AC-9 (E)** `<head>` title, description, Open Graph and Twitter tags equal SPEC-0001's values.
-- [x] **AC-10 (M)** Side-by-side visual review of old vs new at 375, 768 and 1280 px shows no visible difference in layout, typography or colour (screenshots attached to the PR).
+- [x] **AC-10 (M)** Side-by-side visual review of old vs new at 375, 768 and 1280 px shows no visible difference in layout, typography or colour (screenshots attached to the PR). *(Done as a 43-state pixel comparison; results in `baseline/metrics.md`. The screenshots were not kept in the repo or the PR, by the owner's decision.)*
 - [x] **AC-11 (E)** An unknown path returns the styled 404 page.
 
 ### Toolchain
@@ -153,7 +153,7 @@ Verification layer: **E** = Playwright · **A** = axe · **C** = CI/command · *
 ### Delivery
 - [x] **AC-15 (C)** `wrangler.json` has an `assets` directory and **no `main`**; `wrangler deploy` uploads assets only.
 - [ ] **AC-16 (C)** `static/_headers` sets immutable caching on `/_app/immutable/*` and revalidation on HTML; verified in deployed response headers. *(Pending: verified under `wrangler dev`; live check after the first deploy.)*
-- [ ] **AC-17 (C)** CI on every PR runs install → lint → check → build → Playwright + axe; deploy runs only on `main` and is skipped with a warning when Cloudflare secrets are absent. *(Pending: `ci.yml` is written; it is verified by the first PR run.)*
+- [ ] **AC-17 (C)** CI on every PR runs install → lint → check → build → Playwright + axe; deploy runs only on `main` and is skipped with a warning when Cloudflare secrets are absent. *(Pending: the PR path is verified (lint, check, build and e2e passed on PR #4, deploy skipped); the main-only deploy and missing-secrets warning are checked on the first push to `main`.)*
 
 ### Accessibility and performance
 - [ ] **AC-18 (A)** axe reports no serious or critical violations on `/`. *(Not met: `color-contrast` fails on existing design tokens and is excluded in `e2e/a11y.spec.ts`. Fixing it is a visual change and needs the owner's call. No other serious or critical violations.)*
