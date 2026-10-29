@@ -73,7 +73,7 @@ describe('ingest', () => {
 
 	it('reuses the video row across paths', async () => {
 		const [g1, g2] = [await guest(), await guest()];
-		const id = 'reusedvid01';
+		const id = crypto.randomUUID().replace(/-/g, '').slice(0, 11); // fresh per run: DB persists
 		expect((await call(g1, yt(id))).status).toBe(200);
 		expect((await call(g2, yt(id))).status).toBe(200);
 		const svc = service();
