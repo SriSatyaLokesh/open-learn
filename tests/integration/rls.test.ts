@@ -23,6 +23,17 @@ describe('RLS', () => {
 		}
 	});
 
+	it("guest B cannot write progress for A's resource", async () => {
+		const a = await guest();
+		const b = await guest();
+		const { resourceId } = await seedPath(a);
+		const { data: u } = await b.auth.getUser();
+		const { error } = await b
+			.from('resource_progress')
+			.insert({ user_id: u.user!.id, resource_id: resourceId, last_position_seconds: 1 });
+		expect(error?.code).toBe('42501');
+	});
+
 	it("guest B cannot insert a module under A's path", async () => {
 		const a = await guest();
 		const b = await guest();

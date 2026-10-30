@@ -70,7 +70,9 @@ create policy video_select on video for select to authenticated using (true);
 
 -- resource_progress: own rows.
 create policy progress_select on resource_progress for select to authenticated using (user_id = auth.uid());
-create policy progress_insert on resource_progress for insert to authenticated with check (user_id = auth.uid());
+create policy progress_insert on resource_progress for insert to authenticated with check (
+  user_id = auth.uid() and exists (select 1 from resource r where r.id = resource_id));
 create policy progress_update on resource_progress for update to authenticated
-  using (user_id = auth.uid()) with check (user_id = auth.uid());
+  using (user_id = auth.uid())
+  with check (user_id = auth.uid() and exists (select 1 from resource r where r.id = resource_id));
 create policy progress_delete on resource_progress for delete to authenticated using (user_id = auth.uid());
