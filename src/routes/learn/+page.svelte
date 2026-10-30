@@ -10,6 +10,7 @@
 
 	const sb = getSupabase();
 	const failures = page.state.failures ?? [];
+	let showFailures = $state(true);
 
 	let status = $state<'loading' | 'ready' | 'notfound' | 'error'>('loading');
 	let title = $state('');
@@ -178,7 +179,7 @@
 				<p aria-live="polite" class="mt-4">
 					{#if resumedAt !== null}Resumed at {fmt(resumedAt)}{/if}
 				</p>
-				{#if failures.length}
+				{#if failures.length && showFailures}
 					<div class="mt-4" data-testid="import-failures">
 						<p>Not imported:</p>
 						<ul class="list-disc pl-5">
@@ -186,6 +187,7 @@
 								<li>{f.input}: {failureReasons[f.reason] ?? f.reason}</li>
 							{/each}
 						</ul>
+						<button type="button" onclick={() => (showFailures = false)} class="mt-2 underline">Dismiss</button>
 					</div>
 				{/if}
 			</div>

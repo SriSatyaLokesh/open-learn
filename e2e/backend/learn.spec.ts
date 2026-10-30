@@ -150,4 +150,6 @@ test('duplicate failure inputs render without a page error', async ({ page }) =>
 	await expect(page.getByTestId('player')).toBeVisible();
 	await expect(page.locator('[data-testid=import-failures] li')).toHaveCount(2);
 	expect(errors).toEqual([]);
+	await page.getByRole('button', { name: 'Dismiss' }).click();
+	await expect(page.getByTestId('import-failures')).toHaveCount(0);
 });
