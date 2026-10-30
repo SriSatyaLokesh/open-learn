@@ -2,7 +2,7 @@
 
 **Specification ID:** SPEC-0003
 **Feature:** Paste YouTube URLs → guest session → Focus Room plays → reload resumes
-**Status:** Draft
+**Status:** Approved
 **Target Routes:** `/start`, `/learn?path=<public_code>` · Edge Function `ingest` · `supabase/migrations/`
 **Primary Owner:** Full-stack Engineering (`@SriSatyaLokesh`, `@ChadaSaiteja`)
 **Parent Documents:** README roadmap, Phase 1 · [`docs/OPENLEARN_PRD.md`](../../docs/OPENLEARN_PRD.md) §11, §15, §18, §19 · [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) §8, §9, §16 · [`docs/DATABASE.md`](../../docs/DATABASE.md) §1–4, §13 · [`docs/YOUTUBE_INTEGRATION.md`](../../docs/YOUTUBE_INTEGRATION.md) §5, §6
@@ -77,7 +77,7 @@ No code runs in the Cloudflare host. `wrangler.json` is unchanged (`not_found_ha
 
 ```text
 src/
-├── lib/supabase.ts                 # browser client (createClient, $env/dynamic/public)
+├── lib/supabase.ts                 # browser client (createClient; env via src/env.ts defineEnvVars + $app/env/public, baked in at build time, R8)
 ├── modules/youtube/
 │   ├── index.ts                    # public surface: parse, mockResolve, types
 │   ├── parse.ts                    # pure, no imports — also bundled into the Edge Function
@@ -165,7 +165,7 @@ end $$;
 
 ### 4.1 Tables
 
-Column definitions are taken **verbatim** from `DATABASE.md` §1, §2, §3, §4 for: `profile`, `learning_path`, `module`, `concept`, `video`, `resource`, `resource_progress`, including their indexes and the `resource_one_primary_per_concept` partial unique index. Extension: `citext` (`gen_random_uuid()` is built into Postgres 13+). `category`, `path_category`, `path_slug_history` and `user_interest` are **not** created in S1.
+Column definitions are `DATABASE.md` §1, §2, §3, §4's DDL, plus the R7 composite FKs and `unique (id, path_id)` on `module` and `concept` (these keep `concept.path_id` and `resource.path_id` consistent with their parents), for: `profile`, `learning_path`, `module`, `concept`, `video`, `resource`, `resource_progress`, including their indexes and the `resource_one_primary_per_concept` partial unique index. Extension: `citext` (`gen_random_uuid()` is built into Postgres 13+). `category`, `path_category`, `path_slug_history` and `user_interest` are **not** created in S1.
 
 `profile`-on-signup trigger: inserts `(id, handle, display_name)` with `handle = 'guest-' || left(replace(id::text,'-',''), 10)` and `display_name = 'Guest'` for every new `auth.users` row, anonymous or not. S5 lets a converted user change both.
 
@@ -210,7 +210,7 @@ S2 widens `mockResolve` into the `ContentProvider` interface of YOUTUBE_INTEGRAT
 
 | Variable | Where | Notes |
 |---|---|---|
-| `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` | Browser, via `$env/dynamic/public` | `.env.example` carries the local-stack values. If absent, `/start` and `/learn` render "Backend not configured" instead of failing the build. |
+| `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` | Browser, via `src/env.ts` `defineEnvVars` + `$app/env/public`; baked in at build time (R8), so set before `pnpm build` | `.env.example` carries the local-stack values. If absent, `/start` and `/learn` render "Backend not configured" instead of failing the build. |
 | `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Edge Function | Injected by Supabase; the service key never reaches the browser bundle. |
 
 ---
