@@ -24,9 +24,17 @@ test('double submit creates one path', async ({ page }) => {
 	page.on('request', (r) => {
 		if (r.method() === 'POST' && r.url().includes('/functions/v1/ingest')) posts++;
 	});
+	let release!: () => void;
+	const held = new Promise<void>((r) => (release = r));
+	await page.route('**/functions/v1/ingest', async (route) => {
+		await held;
+		await route.continue();
+	});
 	await open(page, '/start');
 	await fill(page, `https://youtu.be/${id()}`);
 	await importBtn(page).dblclick();
+	await expect(page.getByRole('button', { name: 'Importing…' })).toBeDisabled();
+	release();
 	await expect(page).toHaveURL(/\/learn\?path=OL-/);
 	expect(posts).toBe(1);
 });
@@ -45,6 +53,6 @@ test('robots and axe', async ({ page }) => {
 	await open(page, '/start');
 	await expect(page.locator('meta[name=robots]')).toHaveAttribute('content', 'noindex');
 	await expect(page).toHaveTitle('Import · OpenLearn');
-	const { violations } = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
+	const { violations } = await new AxeBuilder({ page }).analyze();
 	expect(violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
 });
