@@ -72,7 +72,7 @@ pnpm install
 pnpm dev
 ```
 
-Before opening a PR, run `pnpm lint`, `pnpm check`, `pnpm build` and `pnpm test:e2e`; CI runs the same steps. Deployment is covered in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+Before opening a PR, run `pnpm lint`, `pnpm check`, `pnpm build` and `pnpm test:e2e`; CI runs the same steps, plus a `backend` job that runs the unit, integration and Supabase-backed e2e tests (see Local backend below). Deployment is covered in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ### Local backend
 
