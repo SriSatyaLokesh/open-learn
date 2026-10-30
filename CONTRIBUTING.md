@@ -74,6 +74,22 @@ pnpm dev
 
 Before opening a PR, run `pnpm lint`, `pnpm check`, `pnpm build` and `pnpm test:e2e`; CI runs the same steps. Deployment is covered in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
+### Local backend
+
+The Supabase-backed features and tests need Docker Desktop running, then:
+
+```bash
+pnpm db:start                      # starts local Supabase
+pnpm exec supabase status -o env   # copy the URL and anon key into .env (from .env.example)
+pnpm test:unit
+pnpm test:integration
+pnpm test:e2e --project backend --grep-invert @real-youtube
+```
+
+- `PUBLIC_SUPABASE_*` are baked in at build time, so set them before `pnpm build` or the e2e run.
+- Ports are 553xx because Windows reserves 54293-54392.
+- New files under `src/` that the Edge Function imports need `supabase stop && supabase start` to be visible to the edge runtime.
+
 ---
 
 ## Reporting Bugs & Suggesting Features
