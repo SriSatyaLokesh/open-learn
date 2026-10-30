@@ -56,3 +56,13 @@ test('robots and axe', async ({ page }) => {
 	const { violations } = await new AxeBuilder({ page }).analyze();
 	expect(violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
 });
+
+test('duplicate invalid lines are both listed', async ({ page }) => {
+	const errors: Error[] = [];
+	page.on('pageerror', (e) => errors.push(e));
+	await open(page, '/start');
+	await fill(page, 'https://vimeo.com/1\nhttps://vimeo.com/1');
+	await importBtn(page).click();
+	await expect(page.getByRole('listitem').filter({ hasText: 'https://vimeo.com/1' })).toHaveCount(2);
+	expect(errors).toEqual([]);
+});

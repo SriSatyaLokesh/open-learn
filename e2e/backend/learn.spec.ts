@@ -142,3 +142,12 @@ test('switching mid-play saves the outgoing video under its own id', async ({ pa
 	await expect.poll(() => saves.length).toBe(2);
 	expect(saves[1]).toEqual({ p_resource_id: await rid(page, 1), p_seconds: 5 });
 });
+
+test('duplicate failure inputs render without a page error', async ({ page }) => {
+	const errors: Error[] = [];
+	page.on('pageerror', (e) => errors.push(e));
+	await importPath(page, [A, 'https://vimeo.com/1', 'https://vimeo.com/1']);
+	await expect(page.getByTestId('player')).toBeVisible();
+	await expect(page.locator('[data-testid=import-failures] li')).toHaveCount(2);
+	expect(errors).toEqual([]);
+});

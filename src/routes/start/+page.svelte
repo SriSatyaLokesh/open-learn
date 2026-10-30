@@ -1,15 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { failureReasons } from '#lib/failure-reasons.js';
 	import { ensureSession, getSupabase } from '#lib/supabase.js';
 
 	type Failure = { input: string; reason: string };
-
-	const reasons: Record<string, string> = {
-		unsupported: 'not a supported link',
-		invalid_url: 'not a YouTube video link (invalid URL)',
-		not_found: 'video not found',
-		not_embeddable: 'video cannot be embedded'
-	};
 
 	const sb = getSupabase();
 	let input = $state('');
@@ -75,8 +69,8 @@
 				<div role="alert">
 					<p>Nothing was imported:</p>
 					<ul class="list-disc pl-5">
-						{#each failures as f (f.input)}
-							<li>{f.input}: {reasons[f.reason] ?? f.reason}</li>
+						{#each failures as f, i (i)}
+							<li>{f.input}: {failureReasons[f.reason] ?? f.reason}</li>
 						{/each}
 					</ul>
 				</div>

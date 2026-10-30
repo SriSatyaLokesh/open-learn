@@ -1,16 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { failureReasons } from '#lib/failure-reasons.js';
 	import { getSupabase } from '#lib/supabase.js';
 	import { loadYouTubeApi, type YTPlayer } from '#lib/youtube-player.js';
 
 	type Item = { id: string; videoId: string; title: string };
 
-	const reasons: Record<string, string> = {
-		unsupported: 'not a supported link',
-		invalid_url: 'not a YouTube video link (invalid URL)',
-		not_found: 'video not found',
-		not_embeddable: 'video cannot be embedded'
-	};
 	const PAUSED = 2;
 
 	const sb = getSupabase();
@@ -184,11 +179,11 @@
 					{#if resumedAt !== null}Resumed at {fmt(resumedAt)}{/if}
 				</p>
 				{#if failures.length}
-					<div class="mt-4">
+					<div class="mt-4" data-testid="import-failures">
 						<p>Not imported:</p>
 						<ul class="list-disc pl-5">
-							{#each failures as f (f.input)}
-								<li>{f.input}: {reasons[f.reason] ?? f.reason}</li>
+							{#each failures as f, i (i)}
+								<li>{f.input}: {failureReasons[f.reason] ?? f.reason}</li>
 							{/each}
 						</ul>
 					</div>
