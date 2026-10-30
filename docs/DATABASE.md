@@ -104,7 +104,8 @@ create table module (
   id        uuid primary key default gen_random_uuid(),
   path_id   uuid not null references learning_path(id) on delete cascade,
   title     text not null,
-  order_key text not null
+  order_key text not null,
+  unique (id, path_id)  -- target of concept's composite FK
 );
 
 create table concept (
@@ -112,13 +113,16 @@ create table concept (
   module_id uuid not null references module(id) on delete cascade,
   path_id   uuid not null references learning_path(id) on delete cascade,  -- denormalised
   title     text not null,
-  order_key text not null
+  order_key text not null,
+  unique (id, path_id),  -- target of resource's composite FK
+  foreign key (module_id, path_id) references module (id, path_id) on delete cascade
 );
 ```
 
 Notes on deliberate choices:
 
 - **`status` has no `ai_suggested` value.** v1 included one, which contradicts PRD §6's non-goal of making AI a core dependency.
+- **Composite FKs** (`concept (module_id, path_id) -> module (id, path_id)`, `resource (concept_id, path_id) -> concept (id, path_id)`) make it impossible to attach a child to a parent in another path, which RLS alone cannot stop because FK checks bypass RLS.
 - **`concept.path_id` is denormalised** so RLS policies and progress queries do not need a two-hop join through `module` on every row check. Maintained by trigger.
 - **`root_path_id`** makes "all descendants of this path" a plain indexed query, leaving recursion only for walking a single chain.
 - **`path_slug_history`** means renaming a path never breaks an inbound link — required because slugs are public and SEO-relevant.
@@ -183,7 +187,8 @@ create table resource (
   order_key     text not null,
   health_status text not null default 'ok' check (health_status in ('ok','broken','replaced')),
   source_url    text,                        -- original URL, for attribution (PRD §11)
-  created_at    timestamptz not null default now()
+  created_at    timestamptz not null default now(),
+  foreign key (concept_id, path_id) references concept (id, path_id) on delete cascade
 );
 
 create index on resource (concept_id, order_key);
@@ -731,7 +736,7 @@ with check (
   -- Publishing requires a permanent account (PRD §19).
   and (visibility <> 'public' or not is_guest())
   -- is_approved_course is set by moderators via the service role only.
-  and is_approved_course = (select is_approved_course from learning_path p where p.id = id)
+  and is_approved_course = (select is_approved_course from learning_path p where p.id = learning_path.id)
 );
 ```
 
@@ -744,6 +749,8 @@ create policy own_rows on note              for all to authenticated using (auth
 create policy own_rows on concept_progress  for all to authenticated using (user_id  = auth.uid()) with check (user_id  = auth.uid());
 create policy own_rows on resource_progress for all to authenticated using (user_id  = auth.uid()) with check (user_id  = auth.uid());
 ```
+
+`resource_progress` writes additionally require a visible resource: its `with check` adds `and exists (select 1 from resource r where r.id = resource_id)`. The FK check bypasses RLS, so without it a user could write progress against a resource they cannot see.
 
 ### 13.4 Tables with no user-facing write policy
 

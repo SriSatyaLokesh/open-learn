@@ -47,6 +47,41 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
+  backend:
+    name: Supabase-backed tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec supabase start
+
+      # Browser env vars are baked in at build time, so export them before `pnpm build` and Playwright's webServer.
+      - name: Export local Supabase env
+        run: |
+          pnpm exec supabase status -o env 2>/dev/null | sed -E 's/^API_URL="?([^"]*)"?$/PUBLIC_SUPABASE_URL=\1/p; s/^ANON_KEY="?([^"]*)"?$/PUBLIC_SUPABASE_ANON_KEY=\1/p; s/^SERVICE_ROLE_KEY="?([^"]*)"?$/SERVICE_ROLE_KEY=\1/p; d' >> "$GITHUB_ENV"
+
+      - run: pnpm test:unit
+      - run: pnpm test:integration
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build
+
+      - name: Leak check (service role key must not be in the build)
+        run: '! grep -rqF "$SERVICE_ROLE_KEY" build/'
+
+      - run: pnpm test:e2e --project backend --grep-invert @real-youtube
+
+      - name: Real-YouTube smoke (non-gating)
+        continue-on-error: true
+        run: pnpm test:e2e --project backend --grep @real-youtube
+
   deploy:
     name: Deploy to Cloudflare (static assets)
     needs: verify
