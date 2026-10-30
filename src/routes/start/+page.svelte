@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { failureReasons } from '#lib/failure-reasons.js';
+	import { parse } from '../../modules/youtube/index.js';
 	import { ensureSession, getSupabase } from '#lib/supabase.js';
 
 	type Failure = { input: string; reason: string };
@@ -17,6 +18,15 @@
 		busy = true; // before any await, so a double submit is ignored
 		error = '';
 		failures = [];
+		const parsed = parse(input);
+		if (!parsed.refs.length) {
+			// Nothing importable: no guest, no request.
+			if (parsed.invalid.length)
+				failures = parsed.invalid.map((i) => ({ input: i, reason: 'invalid_url' }));
+			else error = 'Paste at least one YouTube link.';
+			busy = false;
+			return;
+		}
 		try {
 			await ensureSession(sb);
 			const { data, error: err } = await sb.functions.invoke('ingest', { body: { input } });

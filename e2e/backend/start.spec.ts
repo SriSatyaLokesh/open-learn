@@ -66,3 +66,25 @@ test('duplicate invalid lines are both listed', async ({ page }) => {
 	await expect(page.getByRole('listitem').filter({ hasText: 'https://vimeo.com/1' })).toHaveCount(2);
 	expect(errors).toEqual([]);
 });
+
+test('whitespace-only submit creates no guest and makes no request', async ({ page }) => {
+	let posts = 0;
+	page.on('request', (r) => r.url().includes('/functions/v1/ingest') && posts++);
+	await open(page, '/start');
+	await fill(page, '  \n ');
+	await importBtn(page).click();
+	await expect(page.getByRole('alert')).toContainText('Paste at least one YouTube link');
+	expect(await authKey(page)).toBeNull();
+	expect(posts).toBe(0);
+});
+
+test('all-junk submit lists tokens, creates no guest and makes no request', async ({ page }) => {
+	let posts = 0;
+	page.on('request', (r) => r.url().includes('/functions/v1/ingest') && posts++);
+	await open(page, '/start');
+	await fill(page, 'not-a-link');
+	await importBtn(page).click();
+	await expect(page.getByRole('alert')).toContainText('not-a-link');
+	expect(await authKey(page)).toBeNull();
+	expect(posts).toBe(0);
+});
