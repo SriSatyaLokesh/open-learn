@@ -54,6 +54,15 @@ describe('ingest', () => {
 		expect(await resources(g, body.publicCode)).toHaveLength(1);
 	});
 
+	it('imports a playlist-context video without a spurious failure (R12)', async () => {
+		const g = await guest();
+		const id = crypto.randomUUID().replace(/-/g, '').slice(0, 11);
+		const { status, body } = await call(g, `https://www.youtube.com/watch?v=${id}&list=PL1`);
+		expect(status).toBe(200);
+		expect(body.failures).toEqual([]);
+		expect(await resources(g, body.publicCode)).toHaveLength(1);
+	});
+
 	it('creates nothing when every item fails', async () => {
 		const g = await guest();
 		const { status, body } = await call(g, `https://vimeo.com/1\n${yt('unavailabl1')}`);

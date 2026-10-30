@@ -34,9 +34,12 @@ Deno.serve(async (req) => {
 	const failures: Failure[] = parsed.invalid.map((i) => ({ input: i, reason: 'invalid_url' }));
 	const videos: { id: string; sourceUrl: string }[] = [];
 	const seen = new Set<string>();
+	// R12: a playlist ref from the same URL as a video ref is context, not a request.
+	const videoUrls = new Set(parsed.refs.flatMap((r) => (r.kind === 'video' ? [r.sourceUrl] : [])));
 	for (const r of parsed.refs) {
-		if (r.kind === 'playlist') failures.push({ input: r.sourceUrl, reason: 'unsupported' });
-		else if (!seen.has(r.providerVideoId)) {
+		if (r.kind === 'playlist') {
+			if (!videoUrls.has(r.sourceUrl)) failures.push({ input: r.sourceUrl, reason: 'unsupported' });
+		} else if (!seen.has(r.providerVideoId)) {
 			seen.add(r.providerVideoId);
 			videos.push({ id: r.providerVideoId, sourceUrl: r.sourceUrl });
 		}

@@ -113,7 +113,7 @@ tests/
 |---|---|
 | Auth | Reject without a valid JWT (401). Guests are valid. |
 | Input bounds | Body `{ input: string }`, `input.length ≤ 10 000`; at most **50** references after parse; else 400 with a readable message. |
-| Parse | `parse()` from `src/modules/youtube/parse.ts`. S1 accepts **video** references only; a playlist reference is reported as a failure with reason `unsupported` (S2 lifts this). |
+| Parse | `parse()` from `src/modules/youtube/parse.ts`. S1 accepts **video** references only; a playlist reference is reported as a failure with reason `unsupported` (S2 lifts this). Exception (ruling R12): ingest, not `parse()`, silently drops a playlist ref whose `sourceUrl` equals that of a video ref in the same input (e.g. `watch?v=X&list=Y`): the video imports with no `unsupported` failure. A bare `playlist?list=` URL still fails `unsupported`. |
 | Dedupe | Repeated video IDs in one input are imported once, first occurrence wins (preserve import order, PRD §11). |
 | Resolve | Mock adapter: deterministic title/channel/duration from the ID; IDs listed as unavailable in the fixture return `not_found` / `not_embeddable`. |
 | Video upsert | **Service-role** client, `on conflict (provider, provider_video_id)` updating descriptive fields and `last_synced_at`. Users have no write policy on `video` (DATABASE §13.4). |
