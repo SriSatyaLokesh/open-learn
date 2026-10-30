@@ -4,12 +4,14 @@ import { installFakeYT, importPath } from './fake-yt.ts';
 
 const A = 'https://youtu.be/dQw4w9WgXcQ';
 const B = 'https://youtu.be/M7lc1UVf-VE';
-type FakeWindow = { __yt: { constructed: number; cued: Record<string, unknown>[]; loaded: Record<string, unknown>[]; setTime(s: number): void; pause(): void } };
+type FakeWindow = { __yt: { constructed: number; cued: Record<string, unknown>[]; loaded: Record<string, unknown>[]; setTime(s: number): void; pause(): void; play(): void; ready(): void } };
 const yt = <T>(page: Page, fn: (y: FakeWindow['__yt']) => T) =>
 	page.evaluate(`(${fn})(window.__yt)`) as Promise<T>;
 const isSave = (r: { url(): string }) => r.url().includes('rpc/save_position');
 
-test.beforeEach(({ page }) => installFakeYT(page));
+test.beforeEach(({ page }, info) =>
+	info.title.includes('before ready') ? undefined : installFakeYT(page)
+);
 
 for (const [w, h] of [
 	[360, 740],
@@ -103,4 +105,40 @@ test('robots and axe', async ({ page }) => {
 	await expect(page).toHaveTitle('Focus Room · OpenLearn');
 	const { violations } = await new AxeBuilder({ page }).analyze();
 	expect(violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
+});
+
+type Save = { p_resource_id: string; p_seconds: number };
+const recordSaves = (page: Page) => {
+	const saves: Save[] = [];
+	page.on('request', (r) => isSave(r) && saves.push(r.postDataJSON()));
+	return saves;
+};
+const rid = (page: Page, n: number) =>
+	page.locator('[data-testid=video-list] button').nth(n).getAttribute('data-resource-id');
+
+test('click before ready cues the clicked video', async ({ page }) => {
+	await installFakeYT(page, true);
+	await importPath(page, [A, B]);
+	const items = page.locator('[data-testid=video-list] button');
+	await expect(items).toHaveCount(2);
+	await items.nth(1).click();
+	await page.evaluate('window.__yt.ready()');
+	expect(await yt(page, (y) => (y.cued.at(-1) as { videoId: string }).videoId)).toBe('M7lc1UVf-VE');
+	const saves = recordSaves(page);
+	await page.evaluate('window.__yt.setTime(30); window.__yt.pause()');
+	await expect.poll(() => saves.length).toBe(1);
+	expect(saves[0]).toEqual({ p_resource_id: await rid(page, 1), p_seconds: 30 });
+});
+
+test('switching mid-play saves the outgoing video under its own id', async ({ page }) => {
+	await importPath(page, [A, B]);
+	await page.waitForFunction(() => (window as never as FakeWindow).__yt.cued.length > 0);
+	const saves = recordSaves(page);
+	await page.evaluate('window.__yt.play(); window.__yt.setTime(42)');
+	await page.locator('[data-testid=video-list] button').nth(1).click();
+	await expect.poll(() => saves.length).toBe(1);
+	expect(saves[0]).toEqual({ p_resource_id: await rid(page, 0), p_seconds: 42 });
+	await page.evaluate('window.__yt.setTime(5); window.__yt.pause()');
+	await expect.poll(() => saves.length).toBe(2);
+	expect(saves[1]).toEqual({ p_resource_id: await rid(page, 1), p_seconds: 5 });
 });

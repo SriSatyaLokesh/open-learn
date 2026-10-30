@@ -31,24 +31,30 @@
 	const fmt = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 	const iframeTitle = () => `${items[current].title} — YouTube video player`;
 
-	async function save() {
-		const t = player?.getCurrentTime();
-		const item = items[current];
-		if (!sb || !item || t === undefined || !Number.isFinite(t)) return;
+	// Caller captures item and time together, so nothing reads `current` after an await.
+	async function save(item: Item, t: number) {
+		if (!sb || !Number.isFinite(t)) return;
 		const p_seconds = Math.floor(t);
 		const { error } = await sb.rpc('save_position', { p_resource_id: item.id, p_seconds });
 		if (!error) positions[item.id] = Math.max(positions[item.id] ?? 0, p_seconds);
 	}
 	// Errors are swallowed: the next tick retries (no offline queue in S1).
-	const trySave = () => void save().catch(() => {});
+	const trySave = () => {
+		if (player && items[current]) void save(items[current], player.getCurrentTime()).catch(() => {});
+	};
 
 	function select(i: number) {
+		if (player) {
+			trySave(); // outgoing video, before `current` changes; YouTube sends no PAUSED on load
+			playing = false;
+		}
 		current = i;
-		player?.loadVideoById({
+		if (!player) return; // onReady cues items[current]
+		player.loadVideoById({
 			videoId: items[i].videoId,
 			startSeconds: positions[items[i].id] ?? 0
 		});
-		if (player) player.getIframe().title = iframeTitle();
+		player.getIframe().title = iframeTitle();
 	}
 
 	$effect(() => {
@@ -96,14 +102,15 @@
 
 			const YT = await loadYouTubeApi();
 			if (!target) return;
-			const first = list[current];
 			const p: YTPlayer = new YT.Player(target, {
 				width: '100%',
 				height: '100%',
 				events: {
 					onReady: () => {
 						p.getIframe().title = iframeTitle();
-						p.cueVideoById({ videoId: first.videoId, startSeconds: positions[first.id] ?? 0 });
+						const it = items[current];
+						p.cueVideoById({ videoId: it.videoId, startSeconds: positions[it.id] ?? 0 });
+						player = p; // exposed only once ready, so select() never drives an unready player
 					},
 					onStateChange: (e) => {
 						playing = e.data === 1;
@@ -111,7 +118,6 @@
 					}
 				}
 			});
-			player = p;
 		})().catch(() => (status = 'error'));
 
 		return () => {
@@ -159,6 +165,7 @@
 						<li>
 							<button
 								type="button"
+								data-resource-id={item.id}
 								onclick={() => select(i)}
 								aria-current={i === current ? 'true' : undefined}
 								class="flex w-full items-center gap-3 rounded border border-charcoal/30 p-2 text-left aria-[current=true]:bg-surface-muted aria-[current=true]:font-medium"

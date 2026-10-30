@@ -2,8 +2,8 @@ import type { Page } from '@playwright/test';
 import { open } from '../open.ts';
 
 // Replaces the YouTube IFrame API with a recording fake (spec OQ-3).
-export async function installFakeYT(page: Page): Promise<void> {
-	await page.addInitScript(() => {
+export async function installFakeYT(page: Page, holdReady = false): Promise<void> {
+	await page.addInitScript((hold) => {
 		type Ev = { onReady?: () => void; onStateChange?: (e: { data: number }) => void };
 		const w = window as unknown as Record<string, unknown>;
 		const yt = { constructed: 0, cued: [] as unknown[], loaded: [] as unknown[], time: 0 } as Record<
@@ -14,6 +14,8 @@ export async function installFakeYT(page: Page): Promise<void> {
 		let iframe: HTMLIFrameElement;
 		yt.setTime = (s: number) => (yt.time = s);
 		yt.pause = () => events.onStateChange?.({ data: 2 });
+		yt.play = () => events.onStateChange?.({ data: 1 });
+		yt.ready = () => events.onReady?.();
 		w.__yt = yt;
 		w.YT = {
 			Player: class {
@@ -23,7 +25,7 @@ export async function installFakeYT(page: Page): Promise<void> {
 					iframe = document.createElement('iframe');
 					iframe.style.cssText = 'width:100%;height:100%;border:0';
 					el.replaceWith(iframe);
-					setTimeout(() => events.onReady?.(), 0);
+					if (!hold) setTimeout(() => events.onReady?.(), 0);
 				}
 				cueVideoById(a: unknown) {
 					(yt.cued as unknown[]).push(a);
@@ -40,7 +42,7 @@ export async function installFakeYT(page: Page): Promise<void> {
 				destroy() {}
 			}
 		};
-	});
+	}, holdReady);
 }
 
 // Drives /start the same way a user would; returns the public code.
