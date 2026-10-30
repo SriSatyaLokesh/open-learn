@@ -66,7 +66,7 @@ jobs:
       # Browser env vars are baked in at build time, so export them before `pnpm build` and Playwright's webServer.
       - name: Export local Supabase env
         run: |
-          pnpm exec supabase status -o env | sed -E 's/^API_URL="?([^"]*)"?$/PUBLIC_SUPABASE_URL=/p; s/^ANON_KEY="?([^"]*)"?$/PUBLIC_SUPABASE_ANON_KEY=/p; s/^SERVICE_ROLE_KEY="?([^"]*)"?$/SERVICE_ROLE_KEY=/p; d' >> "$GITHUB_ENV"
+          pnpm exec supabase status -o env 2>/dev/null | sed -E 's/^API_URL="?([^"]*)"?$/PUBLIC_SUPABASE_URL=\1/p; s/^ANON_KEY="?([^"]*)"?$/PUBLIC_SUPABASE_ANON_KEY=\1/p; s/^SERVICE_ROLE_KEY="?([^"]*)"?$/SERVICE_ROLE_KEY=\1/p; d' >> "$GITHUB_ENV"
 
       - run: pnpm test:unit
       - run: pnpm test:integration
