@@ -153,3 +153,10 @@ test('duplicate failure inputs render without a page error', async ({ page }) =>
 	await page.getByRole('button', { name: 'Dismiss' }).click();
 	await expect(page.getByTestId('import-failures')).toHaveCount(0);
 });
+
+test('query failures show an error, not "Path not found"', async ({ page }) => {
+	await page.route('**/rest/v1/learning_path*', (route) => route.fulfill({ status: 500, json: {} }));
+	await page.goto('/learn?path=OL-AAAAA');
+	await expect(page.getByRole('alert')).toContainText('Something went wrong');
+	await expect(page.getByText('Path not found')).toHaveCount(0);
+});

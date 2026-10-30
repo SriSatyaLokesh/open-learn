@@ -67,13 +67,14 @@
 
 		const code = (page.url.searchParams.get('path') ?? '').trim().toUpperCase();
 		(async () => {
-			const { data: path } = await sb
+			const { data: path, error: pathErr } = await sb
 				.from('learning_path')
 				.select('id, title')
 				.eq('public_code', code)
 				.maybeSingle();
+			if (pathErr) throw pathErr;
 			if (!path) return (status = 'notfound');
-			const [{ data: res }, { data: prog }] = await Promise.all([
+			const [{ data: res, error: resErr }, { data: prog, error: progErr }] = await Promise.all([
 				sb
 					.from('resource')
 					.select('id, order_key, video(provider_video_id, title)')
@@ -81,6 +82,7 @@
 					.order('order_key'),
 				sb.from('resource_progress').select('resource_id, last_position_seconds, updated_at')
 			]);
+			if (resErr || progErr) throw resErr ?? progErr;
 			const list = (res ?? []).map((r) => {
 				const v = r.video as unknown as { provider_video_id: string; title: string };
 				return { id: r.id as string, videoId: v.provider_video_id, title: v.title };
